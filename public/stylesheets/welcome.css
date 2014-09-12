@@ -1,0 +1,38 @@
+body {
+	font-family: "Average Sans", "Lucida Grande", sans-serif;
+}
+
+header {
+	background-color: #277650;
+	height: 120px;
+	padding: 40px;
+}
+
+	.logo {
+		font-size: 2em;
+		font-weight: bold;
+		position: relative;
+		top: -9px;
+	}
+
+		.logo img {
+			position: relative;
+			top: -1px;
+			left: 4px;
+		}
+
+		.logo a {
+			color: white;
+		}
+
+	header a:hover {
+		text-decoration: none;
+	}
+
+.css-form input.ng-invalid.ng-dirty {
+	background-color: #fa787e;
+}
+
+.css-form input.ng-valid.ng-dirty {
+	background-color: #78fa89;
+}
