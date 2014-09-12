@@ -14,7 +14,7 @@
 <body>
 	<header>
 		<div class="logo col-sm-4">
-			<a href="/welcome"><img src="images/logo.png" alt="logo">ode</a>
+			<a href="/welcome"><img src="images/logo.png" alt="logo">odular</a>
 		</div>
 		<div class="col-sm-3">
 			<!-- <a href=""><button class="btn btn-primary">Sign up</button></a> -->
@@ -31,7 +31,8 @@
 	<div ng-controller="welcomeController">
 		<div class="col-sm-6 col-sm-offset-1">
 			<h2>Register</h2>	
-<!-- 	works as standard form submission
+
+	<!-- works as standard form submission -->
 
 		<form action="/users/create" method="post" role="form">
 			<div class="form-group">
@@ -51,14 +52,11 @@
 				<input type="password" class="form-control" name="user[password]" placeholder="Password">
 			</div>
 			<div class="form-group">
-				<input type="password" class="form-control" name="user[password_confirmation]" placeholder="Confirm Password">
-			</div>
-			<div class="form-group">
 				<button type="submit" class="btn btn-primary">Register</button>
 			</div>
-		</form> -->
+		</form>
 	
-	 	<form action="" class="css-form" role="form">
+<!-- 	 	<form action="" class="css-form" role="form">
 			<div class="form-group">
 				<div class="row">
 					<div class="col-sm-6">
@@ -76,16 +74,13 @@
 				<input type="password" class="form-control" ng-model="user.password" placeholder="Password" required />
 			</div>
 			<div class="form-group">
-				<input type="password" class="form-control" ng-model="user.password_confirmation" placeholder="Confirm Password" required />
-			</div>
-			<div class="form-group">
 				<button class="btn btn-primary" ng-click="addUser()">Register</button>
 			</div>
 		</form>
 		<p>Data below</p>
 		<pre>{{ user | json }}</pre>
 		<pre>{{ user.password_confirmation }}</pre>
-		<p>Data above</p>
+		<p>Data above</p> -->
 	</div>
 </div>
 </body>
