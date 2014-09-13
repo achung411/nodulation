@@ -13,12 +13,13 @@ app.configure(function() {
 
     app.set('port', process.env.PORT || 1111);
     app.set('views', path.join(__dirname, 'views'));
-    app.use(express.logger('dev'));
+    // app.use(express.logger('dev'));      // this line is preventing
+                                            // socket.io.js from being served
     app.use(express.methodOverride());
     app.use(app.router);
 });
 
-
+// console.log("io = ", app.io);
 
 // ---- from mongoose section's app.js ----
 // app.set('port', process.env.PORT || 1111);

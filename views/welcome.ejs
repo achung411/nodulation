@@ -20,9 +20,9 @@
 			<a href="/register"><button class="btn btn-primary">Sign up</button></a>
 		</div>
 		<div class="col-sm-5">
-			<form action="/sessions/create" class="form-inline" role="form">
-				<input type="text" class="form-control" placeholder="email address">
-				<input type="password" class="form-control" placeholder="password">
+			<form action="/sessions/create" method="post" class="form-inline" role="form">
+				<input type="text" name="user[email]" class="form-control" placeholder="email address">
+				<input type="password" name="user[password]" class="form-control" placeholder="password">
 				<button type="submit" class="btn btn-primary">Sign in</button>
 			</form>
 		</div>

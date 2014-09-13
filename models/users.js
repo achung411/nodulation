@@ -3,6 +3,7 @@ var UserSchema = new mongoose.Schema({
 	first_name: String,
 	last_name: String,
 	email: String,
+	password: String,
 	work: String,
 	hometown: String,
 	user_level: { type: Number, default: 1 },
