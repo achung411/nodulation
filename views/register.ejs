@@ -9,7 +9,41 @@
 	<script src="/socket.io/socket.io.js"></script>
 	<link rel="stylesheet" href="//maxcdn.bootstrapcdn.com/bootstrap/3.2.0/css/bootstrap.min.css">
 	<link rel="stylesheet" href="//fonts.googleapis.com/css?family=Average+Sans">	
-	<link rel='stylesheet' href='/stylesheets/welcome.css' />
+	<link rel="stylesheet" href='/stylesheets/welcome.css' />
+
+	<script>
+	var welcome = angular.module('welcome', ['ngRoute']);
+
+	var ioo = io;
+
+	welcome.factory('socket', function ($rootScope) {
+	  var socket = ioo.connect();
+	  return {
+	    on: function (eventName, callback) {
+	      socket.on(eventName, function () {  
+	        var args = arguments;
+	        $rootScope.$apply(function () {
+	          callback.apply(socket, args);
+	        });
+	      });
+	    },
+	    emit: function (eventName, data, callback) {
+	      socket.emit(eventName, data, function () {
+	        var args = arguments;
+	        $rootScope.$apply(function () {
+	          if (callback) {
+	            callback.apply(socket, args);
+	          }
+	        });
+	      })
+	    }
+	  };
+	});
+
+	welcome.controller('welcomeController', function($scope, socket) {
+
+	});
+	</script>
 </head>
 <body>
 	<header>
@@ -20,9 +54,9 @@
 			<!-- <a href=""><button class="btn btn-primary">Sign up</button></a> -->
 		</div>
 		<div class="col-sm-5">
-			<form action="/sessions/create" class="form-inline" role="form">
-				<input type="text" class="form-control" placeholder="email address">
-				<input type="password" class="form-control" placeholder="password">
+			<form action="/sessions/create" method="post" class="form-inline" role="form">
+				<input type="text" name="user[email]" class="form-control" placeholder="email address">
+				<input type="password" name="user[password]" class="form-control" placeholder="password">
 				<button type="submit" class="btn btn-primary">Sign in</button>
 			</form>
 		</div>

@@ -15,7 +15,7 @@
 	<script>
 		var ioo = io;	// It seems that Angular over-writes socket.io's "io."
 						// I am doing this to make "io" available inside the factory.
-		var portal = angular.module('portal', ['ngRoute'])
+		var portal = angular.module('portal', ['ngRoute']);
 		portal.factory('socket', function ($rootScope) {
 		  var socket = ioo.connect();
 		  return {
@@ -42,7 +42,7 @@
 
 
 
-	    portal.controller('portalController', function($scope, socket){
+	    portal.controller('portalController', function($scope, socket) {
 			$scope.hello = "hi everyone.  how's it going?";
 			console.log('emitting order_ice_cream', {quantity: 5});
 			socket.emit('order_ice_cream', {quantity: 5});
@@ -54,6 +54,7 @@
 	</script>
 </head>
 <body>
+			<% console.log(session_info) %>
 	<header>
 		<div class="logo col-sm-2">
 			<a href=""><img src="images/logo.png">odular</a>
@@ -61,18 +62,24 @@
 		<div class="col-sm-4">
 			<input type="text" placeholder="Search for people" ng-model="searchlight">
 		</div>
-		<div class="col-sm-2">
-			<a href="">Crash Test Dummy</a>
-		</div>
-		<div class="col-sm-1">
-			<a href="">Home</a>
-		</div>
 		<div class="col-sm-3">
+			<div class="col-sm-9">
+				<a href=""><%= session_info.first_name + " " + session_info.last_name %></a>
+			</div>
+			<div class="col-sm-3">
+				<a href="">Home</a>
+			</div>
+		</div>
+		<div class="col-sm-2">
 			<i class="fa fa-users"></i>
 			<i class="fa fa-comments-o"></i>						
 			<i class="fa fa-bell-o"></i>
 			<i class="fa fa-cogs"></i>
 		</div>
+		<div class="col-sm-1">
+			<a href="/signout">Sign out</a>
+		</div>
+
 	</header>
 
 	<div class="container col-sm-12">
@@ -81,9 +88,9 @@
 
 			<!-- placeholder code for partial view -->
 
-			<div class="container" ng-controller="PortalController">
+			<div class="container" ng-controller="portalController">
 				<div class="sidebar col-sm-3">
-					<p class="user_name">Mike Stamford<p>
+					<p class="user_name"><%= session_info.first_name + " " + session_info.last_name %><p>
 					<p>Events</p>
 					<h5>GROUPS<h5>
 					<ul>

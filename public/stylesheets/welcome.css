@@ -36,3 +36,11 @@ header {
 .css-form input.ng-valid.ng-dirty {
 	background-color: #78fa89;
 }
+
+.green {
+	color: green;
+}
+
+.red {
+	color: red;
+}
