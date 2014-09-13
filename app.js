@@ -1,4 +1,5 @@
 var express = require('express.io');
+// var morgan = require('morgan');
 var path = require('path');
 var app = express().http().io();
 var http = require('http');
@@ -15,6 +16,7 @@ app.configure(function() {
     app.set('views', path.join(__dirname, 'views'));
     // app.use(express.logger('dev'));      // this line is preventing
                                             // socket.io.js from being served
+    // app.use(morgan('dev'));                 // morgan is the updated logger...
     app.use(express.methodOverride());
     app.use(app.router);
 });
