@@ -14,14 +14,18 @@ app.configure(function() {
 
     app.set('port', process.env.PORT || 1111);
     app.set('views', path.join(__dirname, 'views'));
+<<<<<<< HEAD
     // app.use(express.logger('dev'));      // this line is preventing
                                             // socket.io.js from being served
     // app.use(morgan('dev'));                 // morgan is the updated logger...
+=======
+    app.use(express.logger('dev'));
+>>>>>>> parent of 433ec62... going to try to install morgan for logger use...  with express.io using express 3...
     app.use(express.methodOverride());
     app.use(app.router);
 });
 
-// console.log("io = ", app.io);
+
 
 // ---- from mongoose section's app.js ----
 // app.set('port', process.env.PORT || 1111);
