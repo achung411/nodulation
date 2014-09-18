@@ -1,0 +1,55 @@
+<div ng-controller="welcomeController">
+	<div class="col-sm-6 col-sm-offset-1">
+		<h2>Register</h2>	
+
+	<!-- works as standard form submission -->
+
+		<form action="/users/create" method="post" role="form">
+			<div class="form-group">
+				<div class="row">
+					<div class="col-sm-6">
+						<input type="text" class="form-control" name="user[first_name]" placeholder="First Name">
+					</div>
+					<div class="col-sm-6">
+						<input type="text" class="form-control" name="user[last_name]" placeholder="Last Name">
+					</div>
+				</div>
+			</div>
+			<div class="form-group">
+				<input type="email" class="form-control" name="user[email]" placeholder="Email">
+			</div>
+			<div class="form-group">
+				<input type="password" class="form-control" name="user[password]" placeholder="Password">
+			</div>
+			<div class="form-group">
+				<button type="submit" class="btn btn-primary">Register</button>
+			</div>
+		</form>
+	
+<!-- 	 	<form action="" class="css-form" role="form">
+			<div class="form-group">
+				<div class="row">
+					<div class="col-sm-6">
+						<input type="text" class="form-control" ng-model="user.first_name" placeholder="First Name" required />
+					</div>
+					<div class="col-sm-6">
+						<input type="text" class="form-control" ng-model="user.last_name" placeholder="Last Name" required />
+					</div>
+				</div>
+			</div>
+			<div class="form-group">
+				<input type="email" class="form-control" ng-model="user.email" placeholder="Email" required />
+			</div>
+			<div class="form-group">
+				<input type="password" class="form-control" ng-model="user.password" placeholder="Password" required />
+			</div>
+			<div class="form-group">
+				<button class="btn btn-primary" ng-click="addUser()">Register</button>
+			</div>
+		</form>
+		<p>Data below</p>
+		<pre>{{ user | json }}</pre>
+		<pre>{{ user.password_confirmation }}</pre>
+		<p>Data above</p> -->
+	</div>
+</div>

@@ -1,0 +1,16 @@
+<div ng-controller="welcomeController">
+	<div class="jumbotron">
+		<h1>Welcome to Nodular</h1>
+		<p>Your home on the web.</p>
+		<p>Sign in above, or register for a free account.</p>
+		<a href="#/register"><button class="btn btn-primary btn-lg">Get Started!</button></a>
+	</div>
+	<div>
+		<% if (typeof notice !== "undefined") { %>
+		<span class="green"><%= notice %></span>
+		<% } %>
+		<% if (typeof error !== "undefined") { %>
+		<span class="red"><%= error %></span>
+		<% } %>
+	</div>
+</div>

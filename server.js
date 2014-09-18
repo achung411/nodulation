@@ -1,8 +1,8 @@
 var fs = require('fs');
 var express = require('express.io');
 var path = require('path');
-var app = express().http().io();
 var http = require('http');
+var app = express().http().io();
 
 app.configure(function() {
     app.use(express.cookieParser());
@@ -15,7 +15,7 @@ app.configure(function() {
     app.use(express.session({secret: 'monkey'}));
     app.set('view engine', 'ejs');
     app.set('port', process.env.PORT || 1111);
-    app.set('views', path.join(__dirname, 'views'));
+    app.set('views', path.join(__dirname, 'public/partials'));
     app.use(express.logger('dev'));
     app.use(express.methodOverride());
     app.use(app.router);

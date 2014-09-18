@@ -1,0 +1,137 @@
+<!DOCTYPE html>
+<html lang="en" ng-app="portal">
+<head>
+	<meta charset="UTF-8">
+	<title><%= title %></title>
+	<meta name="description" content="A social media portal in MEAN">
+	<script src="//ajax.googleapis.com/ajax/libs/angularjs/1.2.23/angular.min.js"></script>
+	<script src="//ajax.googleapis.com/ajax/libs/angularjs/1.2.23/angular-route.min.js"></script>
+	<script src="/socket.io/socket.io.js"></script>
+	<link rel="stylesheet" href="//maxcdn.bootstrapcdn.com/bootstrap/3.2.0/css/bootstrap.min.css">
+	<link rel="stylesheet" type="text/css" href="//maxcdn.bootstrapcdn.com/font-awesome/4.2.0/css/font-awesome.min.css">
+	<link rel="stylesheet" href="//fonts.googleapis.com/css?family=Average+Sans">
+	<link rel="stylesheet" href="/stylesheets/main.css" />
+
+
+	<script>
+		var ioo = io;	// It seems that Angular over-writes socket.io's "io."
+						// I am doing this to make "io" available inside the factory.
+		
+		var portal = angular.module('portal', ['ngRoute']);
+
+		portal.config(function ($routeProvider) {
+			$routeProvider
+				.when('/main',
+				{
+					templateUrl: '/partials/main.html'
+				})
+				.when('/profile',
+				{
+					templateUrl: '/partials/profile.html'
+				})
+				.when('/settings',
+				{
+					templateUrl: '/partials/settings.html'
+				})
+				.otherwise({
+					redirectTo: '/main'
+				});
+		});
+
+		
+		portal.factory('socket', function ($rootScope) {
+		  var socket = ioo.connect();
+		  return {
+		    on: function (eventName, callback) {
+		      socket.on(eventName, function () {  
+		        var args = arguments;
+		        $rootScope.$apply(function () {
+		          callback.apply(socket, args);
+		        });
+		      });
+		    },
+		    emit: function (eventName, data, callback) {
+		      socket.emit(eventName, data, function () {
+		        var args = arguments;
+		        $rootScope.$apply(function () {
+		          if (callback) {
+		            callback.apply(socket, args);
+		          }
+		        });
+		      })
+		    }
+		  };
+		});
+
+
+
+	    portal.controller('portalController', function($scope, socket) {
+			$scope.hello = "hi everyone.  how's it going?";
+			$scope.me = { first_name: "Bruce", last_name: "Banner", email: "badass@planethulk.com",
+				work: "Scientist", hometown: "Harlem", user_level: 1, 
+				status: "I hate anger management...", pic: "/images/pics/hulk.png", 
+				cover: "/images/pics/AvengersAssemble1.jpg" };
+			console.log('emitting order_ice_cream', {quantity: 5});
+			socket.emit('order_ice_cream', {quantity: 5});
+	    });	
+
+	    io = io.connect();
+	    io.emit('order_ice_cream', {data: 'hello'});
+
+	</script>
+</head>
+<body>
+	<header>
+		<div class="logo col-sm-2">
+			<a href=""><img src="images/logo.png">odular</a>
+		</div>
+		<div class="col-sm-4">
+			<input type="text" placeholder="Search for people" ng-model="searchlight">
+		</div>
+		<div class="col-sm-3">
+			<div class="col-sm-9">
+				<a href="#/profile"><%= me.first_name + " " + me.last_name %></a>
+			</div>
+			<div class="col-sm-3">
+				<a href="#/main">Home</a>
+			</div>
+		</div>
+		<div class="col-sm-2">
+			<a href=""><i class="fa fa-users"></i></a>
+			<a href=""><i class="fa fa-comments-o"></i></a>					
+			<a href=""><i class="fa fa-bell-o"></i></a>
+			<a href="#/settings"><i class="fa fa-cogs"></i></a>
+		</div>
+		<div class="col-sm-1">
+			<a href="/signout">Sign out</a>
+		</div>
+	</header>
+	<div class="col-sm-12">
+		
+
+	<div class="main_content col-sm-9" ng-view></div>
+
+	<div class="right_sidebar col-sm-3">
+		<div class="notifications">
+			<p><a href=""><span class="user_name">Sherlock Holmes</span></a> commented on Jim Moriarty's post.</p>
+			<p><a href=""><span class="user_name">Mrs. Hudson</span></a> posted on Yorkshire Cricket's site.</p>
+			<p><a href=""><span class="user_name">Irene Adler</span></a> posted a message on Jim Moriarty's wall.</p>
+			<p><a href=""><span class="user_name">Greg Lestrade</span></a> is now friends with Molly Hooper.</p>
+			<p><a href=""><span class="user_name">John Watson</span></a> likes Sherlock Holmes' post.</p>
+			<p><a href=""><span class="user_name">Sherlock Holmes</span></a> commented on Jim Moriarty's post.</p>
+			<p><a href=""><span class="user_name">Mrs. Hudson</span></a> posted on Yorkshire Cricket's site.</p>
+			<p><a href=""><span class="user_name">Irene Adler</span></a> posted a message on Jim Moriarty's wall.</p>
+			<p><a href=""><span class="user_name">Greg Lestrade</span></a> is now friends with Molly Hooper.</p>
+			<p><a href=""><span class="user_name">John Watson</span></a> likes Sherlock Holmes' post.</p>
+		</div>
+		<div class="contact_list">
+			<p>Sherlock Holmes</p>
+			<p>Mrs. Hudson</p>
+			<p>Greg Lestrade</p>
+			<p>John Watson</p>
+			<p>Jim Moriarty</p>
+		</div>
+	</div>
+	</div>
+</body>
+</html>

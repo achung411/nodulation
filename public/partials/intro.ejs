@@ -17,6 +17,22 @@
 
 	var ioo = io;
 
+	welcome.config(function ($routeProvider) {
+		$routeProvider
+			.when('/welcome',
+			{
+				templateUrl: '/partials/welcome.html'
+			})
+			.when('/register',
+			{
+				templateUrl: '/partials/register.html'
+			})
+			.otherwise({
+				redirectTo: '/welcome'
+			});
+	});
+
+
 	welcome.factory('socket', function ($rootScope) {
 	  var socket = ioo.connect();
 	  return {
@@ -51,18 +67,15 @@
     io = io.connect();
     io.emit('order_ice_cream', {data: 'welcome!'});
 
-
-
-
 	</script>
 </head>
 <body>
 	<header>
 		<div class="logo col-sm-4">
-			<a href="/welcome"><img src="images/logo.png" alt="logo">odular</a>
+			<a href="#/welcome"><img src="images/logo.png" alt="logo">odular</a>
 		</div>
 		<div class="col-sm-3">
-			<a href="/register"><button class="btn btn-primary">Sign up</button></a>
+			<a href="#/register"><button class="btn btn-primary">Sign up</button></a>
 		</div>
 		<div class="col-sm-5">
 			<form action="/sessions/create" method="post" class="form-inline" role="form">
@@ -73,21 +86,7 @@
 		</div>
 	</header>
 
-	<div ng-controller="welcomeController">
-		<div class="jumbotron">
-			<h1>Welcome to Nodular</h1>
-			<p>Your home on the web.</p>
-			<p>Sign in above, or register for a free account.</p>
-			<a href="/register"><button class="btn btn-primary btn-lg">Get Started!</button></a>
-		</div>
-		<div>
-			<% if (typeof notice !== "undefined") { %>
-			<span class="green"><%= notice %></span>
-			<% } %>
-			<% if (typeof error !== "undefined") { %>
-			<span class="red"><%= error %></span>
-			<% } %>
-		</div>
-	</div>
+	<div class="main_content col-sm-9" ng-view></div>
+
 </body>
 </html>
