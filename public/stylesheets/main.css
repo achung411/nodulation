@@ -1,10 +1,15 @@
 body {
 	font-family: "Average Sans", "Lucida Grande", sans-serif;
 	padding: 0;
+	background-color: #BAC7D8;
+}
+
+a:hover {
+	text-decoration: none;
 }
 
 header {
-	background-color: #277650;
+	background: linear-gradient(#84919A, #BAC7D8);
 	height: 35px;
 	padding: 5px 0;
 }
@@ -15,13 +20,13 @@ header {
 		padding: 0 2px;
 	}
 
-	header i {
-		color: #003b1f;
+	i {
+		color: #913027;
 		margin: 5px 7px;
 	}
 
 		header a:hover, header i:hover {
-			color: #76b295;
+			color: #D1694E;
 			text-decoration: none;
 		}
 
@@ -55,15 +60,30 @@ header {
 	padding: 0;
 }
 
+	.main_content a, .right_sidebar a {
+		color: #6F0904;
+	}
+
+		.main_content form {
+			margin: 50px 0;
+		}
+		
 .right_sidebar {
 	background-color: lightblue;
 }
 
 	.sidebar {
-		background-color: lightgray;
 		height: 300px;
-		/*padding: 0;*/
 	}
+
+		.profile {
+			height: 100px;
+			width: 100px;
+		}
+
+		.italics {
+			font-style: italics;
+		}
 
 		h3 {
 			font-size: 0.9em;
@@ -74,7 +94,7 @@ header {
 		}
 
 	.newsfeed {
-		background-color: skyblue;
+		/*background-color: skyblue;*/
 	}
 
 		ul {
@@ -82,19 +102,38 @@ header {
 			left: -40px;
 		}
 
-		.well li {
-			display: inline;
-			margin: 0 10px;
+		.status {
+			padding: 10px;
 		}
 
-		.well input {
-			padding: 2px 3px;
-			border-radius: 5px;
-		}
+			.status p {
+				font-weight: bold;
+				background-color: #CCE9EF;
+				display: inline;
+			}
 
-		.well button {
-			border-radius: 5px;
-		}
+			.status form {
+				margin: 0 10px;
+			}
+
+			.status textarea {
+				margin: 0 0 10px 0;
+			}
+
+			.well li {
+				display: inline;
+				margin: 0 10px;
+			}
+
+			.well input {
+				padding: 2px 3px;
+				border-radius: 5px;
+				width: 70%;
+			}
+
+			.well button {
+				border-radius: 5px;
+			}
 
 		.notifications, .contact_list {
 			height: 250px;
@@ -106,10 +145,91 @@ header {
 			background-color: lightgreen;
 
 		}
+
+			.thumbnail {
+				height: 30px;
+				width: 30px;
+			}
+
 			.user_name {
 				font-weight: bold;
 			}
 
+		td {
+			padding: 0 5px;
+		}
+
 		.contact_list {
 			background-color: purple;
+		}
+
+.container > div {
+	padding: 0;
+}
+
+.splash {
+	/*padding: 0;*/
+	/*max-height: 250px;*/
+	/*height: 350px;*/
+	/*max-width: 90%;*/
+}
+
+	.splash_pic {
+		min-height: 250px;
+		/*background-color: pink;*/
+	}
+
+		.splash_pic img {
+			background-color: #2A4A61;
+		}
+
+	.profile_pic, .profile_pic img {
+		height: 140px;
+		width: 140px;
+		border-radius: 5px;
+	}
+
+	.profile_pic {
+		background-color: white;
+		border: 1px gray solid;
+		position: relative;
+		top: -120px;
+		left: 20px;
+	}
+
+		.profile_pic img {
+			padding: 3px;
+		}
+
+	.splash h3 {
+		color: gold;
+		font-size: 2.2em;
+		font-weight: bold;
+		display: inline-block;
+		vertical-align: bottom;
+		position: relative;
+		top: -220px;
+		left: 180px;
+	}
+
+	.splash ul {
+		background-color: #D0D9E0;
+		border-radius: 10px;
+		border: 1px silver solid;
+		list-style-type: none;
+		padding: 5px;
+		width: 220px;
+		position: relative;
+		top: -220px;
+		left: 180px;
+	}
+
+		.splash li {
+			display: inline;
+			padding: 5px;
+		}
+
+		.splash li:nth-child(2) {
+			border-right: 1px silver solid;
+			border-left: 1px silver solid;
 		}

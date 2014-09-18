@@ -1,3 +1,4 @@
+var fs = require('fs');
 var express = require('express.io');
 var path = require('path');
 var app = express().http().io();
@@ -5,6 +6,9 @@ var http = require('http');
 
 app.configure(function() {
     app.use(express.cookieParser());
+    app.use(express.bodyParser({ uploaddir: __dirname + '/uploads',
+        limit: 3000000,
+        keepExtensions: true}))
     app.use(express.json());
     app.use(express.urlencoded());
     app.use(express.static(path.join(__dirname, 'public')));

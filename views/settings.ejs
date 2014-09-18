@@ -63,7 +63,7 @@
 		</div>
 		<div class="col-sm-3">
 			<div class="col-sm-9">
-				<a href="/profile"><%= me.first_name + " " + me.last_name %></a>
+				<a href="/myprofile"><%= me.first_name + " " + me.last_name %></a>
 			</div>
 			<div class="col-sm-3">
 				<a href="/main">Home</a>
@@ -96,67 +96,110 @@
 					<% if (typeof me.status !== "undefined") { %>
 					<p class="italics"><%= me.status %></p>
 					<% } %>
+					<div class="personal">
+						<table>
+							<tbody>
+								<tr>
+									<td>E-mail:</td>
+									<td><%= me.email %></td>
+								</tr>
+								<tr>
+									<td>Work:</td>
+									<% if (typeof me.work !== "undefined") { %>
+									<td><%= me.work %></td>
+									<% } %>
+								</tr>
+								<tr>
+									<td>Hometown:</td>
+									<% if (typeof me.hometown !== "undefined") { %>
+									<td><%= me.hometown %></td>
+									<% } %>
+								</tr>
+
+							</tbody>
+						</table>
+					</div>
 					<h5>Events</h5>
-					<h5>GROUPS</h5>
+					<h5>GROUPS<h5>
 					<ul>
 						<li><a href="">St. Barts classes</a></li>
 						<li><a href="">St. Barts alumni</a></li>
 						<li><a href="">The Baker St. Regulars</a></li>
 					</ul>
 				</div>
-				<div class="newsfeed col-sm-7">
-					<div class="well status">
-						<i class="fa fa-pencil-square-o"></i>
-						<p>Update Status</p>
-						<form action="/statuses/create" method="post">
-							<textarea class="form-control" rows="3">What's on your mind?</textarea>
-
-							<button type="submit" class="btn-primary">Post Status</button>
-						</form>
-					</div>
-
-					<div class="well">
-						<p class="user_name"><a href="">John Watson</a></p>
-						<p>OMG OMG OMG.  Dr. Who is baaaack!!!! I'm soooo excited.  It seems like I've been waiting forever.</p>
-						<ul>
-							<li><a href="">Like</a></li>
-							<li><a href="">Comment</a></li>
-							<li><a href="">Share</a></li>
-						</ul>
-						<div class="well">
-							<p class="user_name"><a href="">Jim Moriarty</a></p>
-							<p>He's not the only one...</p>
-							<ul>
-								<li><a href="">Like</a></li>
-								<li><a href="">Comment</a></li>
-								<li><a href="">Share</a></li>
-							</ul>
-							<form role="form">
-								<input type="text" name="comment" placeholder="Write a comment...">
-								<button type="submit" class="btn-primary">Comment</button>
-							</form>
+				<div class="col-sm-7">
+					<h1>User Details</h1>
+					<form action="/users/edit" method="post" class="form-horizontal" role="form">
+						<div class="form-group">
+							<label for="first_name" class="col-sm-3 control-label">First Name:</label>
+							<div class="col-sm-9">
+								<input type="text" name="first_name" id="first_name" class="form-control" value="<%= me.first_name %>">	
+							</div>
 						</div>
-						<form role="form">
-							<input type="text" name="comment" placeholder="Write a comment...">
-							<button type="submit" class="btn-primary">Comment</button>
-						</form>
-					</div>
-					<div class="well">
-						<p class="user_name"><a href="">Irene Adler</a></p>
-						<p>I'm not dead.  Let's have dinner</p>
-						<ul>
-							<li><a href="">Like</a></li>
-							<li><a href="">Comment</a></li>
-							<li><a href="">Share</a></li>
-						</ul>
-						<form role="form">
-							<input type="text" name="comment" placeholder="Write a comment...">
-							<button type="submit" class="btn-primary">Comment</button>
-						</form>
-					</div>
+						<div class="form-group">
+							<label for="last_name" class="col-sm-3 control-label">Last Name:</label>
+							<div class="col-sm-9">
+								<input type="text" name="last_name" id="last_name" class="form-control" value="<%= me.last_name %>">
+							</div>
+						</div>
+						<div class="form-group">
+							<label for="work" class="col-sm-3 control-label">Occupation:</label>
+							<div class="col-sm-9">
+								<input type="text" name="work" id="work" class="form-control" 
+									<% if (typeof me.work !== "undefined") { %>
+										value="<%= me.work %>"
+									<% } %>>
+							</div>
+						</div>
+						<div class="form-group">
+							<label for="hometown" class="col-sm-3 control-label">Hometown:</label>
+							<div class="col-sm-9">
+								<input type="text" name="hometown" id="hometown" class="form-control"
+									<% if (typeof me.work !== "undefined") { %>
+										value="<%= me.hometown %>"
+									<% } %>>
+							</div>
+						</div>
+						<div class="form-group">
+							<div class="col-sm-9 col-sm-offset-3">
+								<button type="submit" class="btn btn-primary">Save changes</button>
+							</div>
+						</div>
+					</form>
+
+					<h2>Upload Profile pic</h2>
+					<form action="/pictures/create" method="post" class="form-horizontal" enctype="multipart/form-data" role="form">
+						<div class="form-group">
+							<label for="picture" class="col-sm-3 control-label">Select Picture:</label>
+							<div class="col-sm-9">
+								<input type="file" name="picture" id="picture">
+							</div>
+						</div>
+						<div class="form-group">
+							<div class="col-sm-9 col-sm-offset-3">
+								<button type="submit" class="btn btn-primary">Upload</button>
+							</div>
+						</div>
+					</form>
+
+					<h2>Upload Cover photo</h2>
+					<form action="/covers/create" method="post" class="form-horizontal" enctype="multipart/form-data" role="form">
+						<div class="form-group">
+							<label for="cover" class="col-sm-3 control-label">Select Picture:</label>
+							<div class="col-sm-9">
+								<input type="file" name="cover" id="cover">
+							</div>
+						</div>
+						<div class="form-group">
+							<div class="col-sm-9 col-sm-offset-3">
+								<button type="submit" class="btn btn-primary">Upload</button>
+							</div>
+						</div>
+					</form>		
+
 				</div>
 
-				<div class="placeholder col-sm-2">
+				<div class="col-sm-2">
 					<p>Placeholder column sm-2</p>
 				</div>
 
@@ -188,35 +231,5 @@
 	
 	</div>
 
-
-
-	<div class="col-sm-4">
-		<p>test area below</p>
-		<table class="table">
-			<thead>
-				<tr>
-					<th>col 1</th>
-					<th>col 2</th>
-					<th>col 3</th>
-					<th>col 4</th>
-					<th>col 5</th>
-				</tr>
-			</thead>
-<!-- 			<tbody ng-repeat="person in all_users">
-				<tr>
-					<td>{{ person._id }}</td>
-					<td ng-bind="person.first_name"></td>
-					<td>{{ person.last_name }}</td>
-					<td ng-bind="person.email"></td>
-					<td>table data 5</td>
-				</tr>
-			</tbody> -->
-		</table>
-		<p>test area above</p>
-	</div>
-
-	<div ng-controller="portalController">
-		{{ hello }}
-	</div>
 </body>
 </html>

@@ -1,4 +1,5 @@
 var mongoose = require('mongoose'),
+	fs = require('fs'),
 	User = mongoose.model('User');
 
 module.exports = function Route(app) {
@@ -21,14 +22,33 @@ module.exports = function Route(app) {
 		res.render('register', { title: 'Registration'});
 	});
 	app.get('/main', function(req, res) {
-		if (typeof req.session.logged_user_id !== "undefined") {
-			res.render('main', { title: 'Main', session_info: req.session });
+		if (typeof req.session.current_user !== "undefined") {
+			// console.log('req.session.current_user: ', req.session.current_user);
+			res.render('main', { title: 'Main', me: req.session.current_user });
 		}
 		else {
 			req.session.notice = "Please log in.";
 			req.session.save(function() {
 				res.redirect('/welcome');
 			})
+		};
+	});
+	app.get('/home', function(req, res) {
+		res.render('main', { title: 'Main', me: req.session.current_user });
+	});
+	app.get('/profile', function(req, res) {
+		res.render('profile', { title: 'Profile', user: req.session.current_user });
+	})
+	app.get('/myprofile', function(req, res) {
+		res.render('profile', { title: 'Profile', user: req.session.current_user });
+	});
+	app.get('/settings', function(req, res) {
+		if (typeof req.session.current_user !== "undefined") {
+			res.render('settings', { title: 'User Account Settings', me: req.session.current_user });
+		}
+		else {
+			req.session.notice = "Please log in.";
+			res.render('welcome', { title: 'Welcome' });
 		}
 	});
 	app.post('/users/create', function(req, res) {
@@ -40,10 +60,43 @@ module.exports = function Route(app) {
 			return res.redirect('/welcome');
 		});
 	});
+	app.post('/users/edit', function(req, res) {
+		var newInfo = req.body;
+
+		console.log("Ready to update!");
+		console.log("Current user info:", req.session.current_user);
+		console.log("Current user id:", req.session.current_user._id);
+		User.findOne({_id: req.session.current_user._id }, 
+					// {$set: {hometown: newInfo.hometown} }, 
+					function(err, result) {
+						if (err) {
+							// return handleError(err);
+							console.log("Houston, we've got a problem.");
+						}
+						else {
+							console.log("Updating user info:", result);
+							console.log("with new info:", newInfo);
+							result.first_name = newInfo.first_name;
+							result.last_name = newInfo.last_name;
+							result.work = newInfo.work;
+							result.hometown = newInfo.hometown;
+							result.updated_at = new Date();
+
+							console.log("Here is my updated info: ", result);
+							result.save(function(err) {
+								if (err) {
+									console.log("Mo problems: ", err);
+								}
+								else {
+									return res.redirect('/settings');
+								}
+							});
+						}
+		});
+	});
 	app.post('/sessions/create', function(req, res) {
 		var mail = req.body.user.email;
 		var pwd = req.body.user.password;
-		// console.log("searching for: " + email + " @ " + pwd);
 		User.find({email: mail, password: pwd}, function(err, results) {
 			if (results.length == 0) {
 				req.session.error = "There is no user registered with that email and password.";
@@ -52,26 +105,83 @@ module.exports = function Route(app) {
 				})
 			}
 			else {
-				// the results are returned in an array of objects
-				var data = results[0];
-				req.session.first_name = data.first_name;
-				req.session.last_name = data.last_name;
-				req.session.logged_user_id = data._id;
-				req.session.sessionID = req.sessionID;
+				var data = results[0];		// the results are returned in an array of objects
+				req.session.current_user = results[0];
 				req.session.save(function() {
 					res.redirect('/main');
 				})
-				// res.send(results);
 			};
 		});
 	});
+	app.post('/pictures/create', function(req, res, next) {
+		var tmp_path = req.files.picture.path;
+		var target_path = './public/images/pics/' + req.files.picture.name;
+		fs.rename(tmp_path, target_path, function(err) {
+			if (err) throw err;
+			fs.unlink(tmp_path, function() {
+				if (err) {
+					throw err;
+				}
+				else {
+					User.findOne({_id: req.session.current_user._id }, 
+						function(err, result) {
+							if (err) {
+								return handleError(err);
+							}
+							else {
+								result.pic = '/images/pics/' + req.files.picture.name;
+								result.updated_at = new Date();
+								result.save(function(err) {
+									if (err) {
+										return handleError(err);
+									}
+									else {
+										return res.redirect('/settings');
+									}
+								});
+							}
+					})
+				}
+			})
+		});
+	});
+	app.post('/covers/create', function(req, res, next) {
+		var tmp_path = req.files.cover.path;
+		var target_path = './public/images/pics/' + req.files.cover.name;
+		fs.rename(tmp_path, target_path, function(err) {
+			if (err) throw err;
+			fs.unlink(tmp_path, function() {
+				if (err) {
+					throw err;
+				}
+				else {
+					User.findOne({_id: req.session.current_user._id }, 
+						function(err, result) {
+							if (err) {
+								return handleError(err);
+							}
+							else {
+								result.cover = '/images/pics/' + req.files.cover.name;
+								result.updated_at = new Date();
+								result.save(function(err) {
+									if (err) {
+										return handleError(err);
+									}
+									else {
+										return res.redirect('/settings');
+									}
+								});
+							}
+					})
+				}
+			})
+		});
+	});	
 	app.get('/signout', function(req, res) {
 		req.session.destroy(function() {
 			res.redirect('/welcome');
 		});
 	});
-
-
 
 	app.get('/test', function(req, res) {		// for debugging purposes... i can
 		User.find({}, function(err, results) {  // view all users in the database

@@ -11,6 +11,8 @@ var UserSchema = new mongoose.Schema({
 	updated_at: { type: Date, default: Date.now },
 	status: String,
 	status_created_at: { type: Date },
+	pic: String,
+	cover: String,
 	hidden: Boolean
 });
 UserSchema.path('first_name').required(true, 'User name cannot be blank');
