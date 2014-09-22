@@ -1,17 +1,9 @@
-/*color scheme: 
-	9b8fc1
-	6f60a1
-	4e3c85
-	36256d
-	1e0e4f*/
-
 body {
 	font-family: "Average Sans", "Lucida Grande", sans-serif;
 	background-color: #e4e0dd;
 }
 
 header {
-	/*background-color: #277650;*/
 	background: linear-gradient(#3a3d44, #83868d);
 	height: 120px;
 	padding: 40px;
@@ -46,6 +38,13 @@ header {
 	background-color: #78fa89;
 }
 
+.messages {
+	padding: 10px;
+	margin: 20px 0 0 0;
+	font-size: 2em;
+}
+
+
 .green {
 	color: green;
 }
@@ -53,4 +52,3 @@ header {
 .red {
 	color: red;
 }
-

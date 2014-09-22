@@ -5,12 +5,7 @@
 		<p>Sign in above, or register for a free account.</p>
 		<a href="#/register"><button class="btn btn-primary btn-lg">Get Started!</button></a>
 	</div>
-	<div>
-		<% if (typeof notice !== "undefined") { %>
-		<span class="green"><%= notice %></span>
-		<% } %>
-		<% if (typeof error !== "undefined") { %>
-		<span class="red"><%= error %></span>
-		<% } %>
+	<div class="messages">
+		<p class="red" ng-bind="error_msg"></p>
 	</div>
 </div>

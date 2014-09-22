@@ -1,8 +1,8 @@
-var fs = require('fs');
-var express = require('express.io');
-var path = require('path');
-var http = require('http');
-var app = express().http().io();
+var fs = require('fs'),
+    express = require('express.io'),
+    path = require('path'),
+    http = require('http'),
+    app = express().http().io();
 
 app.configure(function() {
     app.use(express.cookieParser());
@@ -28,14 +28,6 @@ var routes = require('./config/routes')(app);
 if ('development' == app.get('env')) {
     app.use(express.errorHandler());
 }
-// http.createServer(app).listen(app.get('port'), function() {
-//     console.log('Express server listening on port ' + app.get('port'));
-// });
-// ----------------------------------------
 
 app.listen(1111);
 console.log('Express server listening on port ' + app.get('port'));
-
-app.io.route('order_ice_cream', function(req) {
-    console.log('received an event', req.data);
-})

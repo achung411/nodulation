@@ -15,7 +15,7 @@ var UserSchema = new mongoose.Schema({
 	cover: String,
 	hidden: Boolean
 });
-UserSchema.path('first_name').required(true, 'User name cannot be blank');
-UserSchema.path('last_name').required(true, 'User name cannot be blank');
-UserSchema.path('email').required(true, 'User email cannot be blank');
+UserSchema.path('first_name').required(true, 'Please fill out your first name.');
+UserSchema.path('last_name').required(true, 'Please fill out your last name.');
+UserSchema.path('email').required(true, 'You must enter a valid email address.');
 mongoose.model('User', UserSchema);
