@@ -9,7 +9,12 @@ module.exports = function Route(app) {
   		res.render('intro', { title: 'Welcome' });
   	});
   	app.get('/index', function(req, res) {
-  		res.render('index', { title: 'Nodular', me: req.session.current_user });
+  		if (typeof req.session.current_user !== "undefined") {
+  			res.render('index', { title: 'Nodular', me: req.session.current_user });
+  		}
+  		else {
+  			res.redirect('/');
+  		};
   	});
  //  	app.get('/welcome', function(req, res) {
  //  		if (typeof req.session.notice !== "undefined") {
@@ -117,14 +122,17 @@ module.exports = function Route(app) {
 	            req.session.current_user = found_user;
 	            req.session.sessionID = req.sessionID;
 	            req.session.save(function() {
-	            	console.log("session data: ", req.session);
-	                // session_data.push(found_user);
+	            	// console.log("session data: ", req.session);
 	                session_data[req.session.sessionID] = found_user;
-	                console.log("server log of session data: ", session_data);
+	                // console.log("server log of session data: ", session_data);
 	                req.io.emit('user_authenticated');
 	            });
 	        };
 	    });
+	});
+
+	app.io.route("initialize_connection", function(req) {
+		req.io.emit("initializing", {my_record: req.session.current_user});
 	});
 
 	// app.post('/pictures/create', function(req, res, next) {
@@ -221,9 +229,14 @@ module.exports = function Route(app) {
 		});
 	});
 
-	app.get('/test', function(req, res) {		// for debugging purposes... i can
-		User.find({}, function(err, results) {  // view all users in the database
-			res.send(results);					// with this api call
+// ------------------- for debugging purposes ---------------
+	app.get('/test', function(req, res) {		// this api call displays 
+		User.find({}, function(err, results) {  // all users in the database
+			res.send(results);					
 		});
+	});
+
+	app.get('/session', function(req, res) {	// this api call displays the
+		res.send(session_data);				// server's saved session data
 	});
 };

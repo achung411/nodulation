@@ -15,16 +15,9 @@
 	var portal = angular.module('portal', ['ngRoute']);
 	var ioo = io;
 
-	// io = io.connect();
+	// io = io.connect();	// if i want to make io available in this scope...
 
-    // io.emit('order_ice_cream', {data: 'welcome!'});
-    // io.on('user_authenticated', function(data) {
-    // 	console.log('received confirmation that our user is authorized:', data);
-    // 	window.location.href = "/index";
-    // })
-
-
-// ------------ /js/routes.js ---------------
+// ------------ /js/welcome_routes.js ---------------
 	portal.config(function ($routeProvider) {
 		$routeProvider
 			.when('/welcome',
@@ -40,7 +33,7 @@
 			});
 	});
 
-// ------------ /js/factories/factories.js ---------------
+// ------------ /js/factories/socket.js ---------------
 	portal.factory('socket', function ($rootScope) {
 		var socket = ioo.connect();
 		var factory = {};
@@ -80,7 +73,7 @@
 // ------------ /js/controllers/controllers.js ---------------
 	portal.controller('welcomeController', function($scope, socket){    	
 
-    	$scope.logged_user = [];
+    	// $scope.logged_user = [];		// not sure if i need this just yet...
     	$scope.notice;
     	$scope.error_msg;
     	$scope.reg_error;
@@ -110,7 +103,6 @@
 		};
 
 	    socket.on('user_authenticated', function(data) {
-	    	// console.log('received confirmation that our user is authorized:', data.logged_user);
 			window.location.href = "/index";	    	
 	    });
 
@@ -133,7 +125,6 @@
 			</form>
 		</div>
 	</header>
-	
 	<div class="main_content" ng-view></div>
 </body>
 </html>
