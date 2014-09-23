@@ -17,9 +17,9 @@
 		<div class="well status">
 			<i class="fa fa-pencil-square-o"></i>
 			<p>Update Status</p>
-			<form action="/statuses/create" method="post">
-				<textarea class="form-control" rows="3" name="new_status">What's on your mind?</textarea>
-				<button type="submit" class="btn-primary">Post Status</button>
+			<form name="statusForm">
+				<textarea class="form-control" rows="3" ng-model="new_status">What's on your mind?</textarea>
+				<button class="btn-primary" ng-click="writeStatus(new_status)">Post Status</button>
 			</form>
 		</div>
 		<div class="well">

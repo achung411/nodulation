@@ -1,18 +1,22 @@
 <div class="container" ng-controller="portalController">
 
 	<div class="col-sm-12 splash">
-		<div class="splash_pic">
-			<img ng-src="{{ me.cover }}" alt="cover">
+		<div>
+			<img ng-src="{{ me.cover }}" alt="">
 		</div>
-		<div class="profile_pic">
-			<img ng-src="{{ me.pic }}" alt="profile pic">
+		<div class="persona">
+			<div class="frame">
+				<img ng-src="{{ me.pic }}" alt="">
+			</div>
+			<div class="nav">
+				<h3 ng-bind="me.first_name + ' ' + me.last_name"></h3>			
+				<ul>
+					<li><a href="">Friends</a></li>
+					<li><a href="">Message</a></li>
+					<li><a href="#/settings">Update Info</a></li>
+				</ul>
+			</div>
 		</div>
-		<h3 ng-bind="me.first_name + ' ' + me.last_name"></h3>
-		<ul>
-			<li><a href="">Friends</a></li>
-			<li><a href="">Message</a></li>
-			<li><a href="#/settings">Update Info</a></li>
-		</ul>
 	</div>
 
 	<div class="sidebar col-sm-3">
@@ -30,9 +34,9 @@
 		<div class="well status">
 			<i class="fa fa-pencil-square-o"></i>
 			<p>Update Status</p>
-			<form action="/statuses/create" method="post">
-				<textarea class="form-control" rows="3" name="new_status">What's on your mind?</textarea>
-				<button type="submit" class="btn-primary">Post Status</button>
+			<form name="statusForm">
+				<textarea class="form-control" rows="3" ng-model="new_status">What's on your mind?</textarea>
+				<button class="btn-primary" ng-click="writeStatus(new_status)">Post Status</button>
 			</form>
 		</div>
 

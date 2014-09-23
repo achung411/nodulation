@@ -82,13 +82,24 @@
     		$scope.me = req.my_record;
     	});
 
+    	$scope.writeStatus = function(newStatus) {
+    		// console.log("incoming status: ", newStatus);
+    		socket.emit("/statuses/create", {status: newStatus});
+    	};
+
+    	socket.on("status_updated", function(req) {
+    		// console.log("incoming status message: ", req);
+    		// console.log("current user details: ", $scope.me);
+    		$scope.me.status = req.status;
+    	});
+
 	});
 	</script>
 </head>
 <body>
 	<header>
 		<div class="logo col-sm-2">
-			<a href=""><img src="images/logo.png">odular</a>
+			<a href="#/main"><img src="images/logo.png">odular</a>
 		</div>
 		<div class="col-sm-4">
 			<input type="text" placeholder="Search for people" ng-model="searchlight">
@@ -112,31 +123,30 @@
 		</div>
 	</header>
 	<div class="col-sm-12">
-		
 
-	<div class="main_content col-sm-9" ng-view></div>
+		<div class="main_content col-sm-9" ng-view></div>
 
-	<div class="right_sidebar col-sm-3">
-		<div class="notifications">
-			<p><a href=""><span class="user_name">Sherlock Holmes</span></a> commented on Jim Moriarty's post.</p>
-			<p><a href=""><span class="user_name">Mrs. Hudson</span></a> posted on Yorkshire Cricket's site.</p>
-			<p><a href=""><span class="user_name">Irene Adler</span></a> posted a message on Jim Moriarty's wall.</p>
-			<p><a href=""><span class="user_name">Greg Lestrade</span></a> is now friends with Molly Hooper.</p>
-			<p><a href=""><span class="user_name">John Watson</span></a> likes Sherlock Holmes' post.</p>
-			<p><a href=""><span class="user_name">Sherlock Holmes</span></a> commented on Jim Moriarty's post.</p>
-			<p><a href=""><span class="user_name">Mrs. Hudson</span></a> posted on Yorkshire Cricket's site.</p>
-			<p><a href=""><span class="user_name">Irene Adler</span></a> posted a message on Jim Moriarty's wall.</p>
-			<p><a href=""><span class="user_name">Greg Lestrade</span></a> is now friends with Molly Hooper.</p>
-			<p><a href=""><span class="user_name">John Watson</span></a> likes Sherlock Holmes' post.</p>
+		<div class="right_sidebar col-sm-3">
+			<div class="notifications">
+				<p><a href=""><span class="user_name">Sherlock Holmes</span></a> commented on Jim Moriarty's post.</p>
+				<p><a href=""><span class="user_name">Mrs. Hudson</span></a> posted on Yorkshire Cricket's site.</p>
+				<p><a href=""><span class="user_name">Irene Adler</span></a> posted a message on Jim Moriarty's wall.</p>
+				<p><a href=""><span class="user_name">Greg Lestrade</span></a> is now friends with Molly Hooper.</p>
+				<p><a href=""><span class="user_name">John Watson</span></a> likes Sherlock Holmes' post.</p>
+				<p><a href=""><span class="user_name">Sherlock Holmes</span></a> commented on Jim Moriarty's post.</p>
+				<p><a href=""><span class="user_name">Mrs. Hudson</span></a> posted on Yorkshire Cricket's site.</p>
+				<p><a href=""><span class="user_name">Irene Adler</span></a> posted a message on Jim Moriarty's wall.</p>
+				<p><a href=""><span class="user_name">Greg Lestrade</span></a> is now friends with Molly Hooper.</p>
+				<p><a href=""><span class="user_name">John Watson</span></a> likes Sherlock Holmes' post.</p>
+			</div>
+			<div class="contact_list">
+				<p>Sherlock Holmes</p>
+				<p>Mrs. Hudson</p>
+				<p>Greg Lestrade</p>
+				<p>John Watson</p>
+				<p>Jim Moriarty</p>
+			</div>
 		</div>
-		<div class="contact_list">
-			<p>Sherlock Holmes</p>
-			<p>Mrs. Hudson</p>
-			<p>Greg Lestrade</p>
-			<p>John Watson</p>
-			<p>Jim Moriarty</p>
-		</div>
-	</div>
 	</div>
 </body>
 </html>

@@ -94,7 +94,6 @@
     	});
 
 		$scope.login = function (user) {
-			// console.log('our user details: ', user);
 			socket.emit('/sessions/create', user);
 		};
 

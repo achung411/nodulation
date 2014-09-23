@@ -1,7 +1,10 @@
 body {
 	font-family: "Average Sans", "Lucida Grande", sans-serif;
-	padding: 0;
 	background-color: #BAC7D8;
+}
+
+input, button, .frame, .frame img {
+	border-radius: 5px;
 }
 
 a:hover {
@@ -49,7 +52,6 @@ header {
 
 	header input {
 		color: black;
-		border-radius: 5px;
 		width: 100%;
 		padding: 0 10px;
 	}
@@ -91,13 +93,6 @@ header {
 
 		.sidebar ul {
 			list-style-type: none;
-		}
-
-	.newsfeed {
-		/*background-color: skyblue;*/
-	}
-
-		ul {
 			position:relative;
 			left: -40px;
 		}
@@ -127,12 +122,10 @@ header {
 
 			.well input {
 				padding: 2px 3px;
-				border-radius: 5px;
 				width: 70%;
 			}
 
 			.well button {
-				border-radius: 5px;
 			}
 
 		.notifications, .contact_list {
@@ -143,7 +136,6 @@ header {
 
 		.notifications {
 			background-color: lightgreen;
-
 		}
 
 			.thumbnail {
@@ -168,68 +160,64 @@ header {
 }
 
 .splash {
-	/*padding: 0;*/
-	/*max-height: 250px;*/
-	/*height: 350px;*/
-	/*max-width: 90%;*/
+	margin: 0 0 40px 0;
 }
 
-	.splash_pic {
+	.splash:first-child {
 		min-height: 250px;
-		/*background-color: pink;*/
+		min-width: 400px;
 	}
 
-		.splash_pic img {
-			background-color: #2A4A61;
-		}
-
-	.profile_pic, .profile_pic img {
-		height: 140px;
-		width: 140px;
-		border-radius: 5px;
-	}
-
-	.profile_pic {
-		background-color: white;
-		border: 1px gray solid;
-		position: relative;
-		top: -120px;
+	.persona {
+		position: absolute;
+		top: 200px;
 		left: 20px;
 	}
 
-		.profile_pic img {
+	.frame, .nav {
+		display: inline-block;
+		vertical-align: top;
+	}
+
+	.frame {
+		background-color: white;
+		border: 1px gray solid;
+		height: 143x;
+		width: 143px;
+	}
+
+		.frame img {
+			height: 140px;
+			width: 140px;
 			padding: 3px;
 		}
 
-	.splash h3 {
-		color: gold;
-		font-size: 2.2em;
-		font-weight: bold;
-		display: inline-block;
-		vertical-align: bottom;
-		position: relative;
-		top: -220px;
-		left: 180px;
+	.nav {
+		margin: 20px 0 0 10px;
 	}
 
-	.splash ul {
-		background-color: #D0D9E0;
-		border-radius: 10px;
-		border: 1px silver solid;
-		list-style-type: none;
-		padding: 5px;
-		width: 220px;
-		position: relative;
-		top: -220px;
-		left: 180px;
-	}
+		.nav h3 {
+			color: gold;
+			font-size: 2.2em;
+			font-weight: bold;
+		}
 
-		.splash li {
-			display: inline;
+		.nav ul {
+			/*background-color: #D0D9E0;*/
+			background: linear-gradient(#D0D9E0, white);
+			border-radius: 10px;
+			border: 1px silver solid;
+			list-style-type: none;
 			padding: 5px;
+			width: 213px;
 		}
 
-		.splash li:nth-child(2) {
-			border-right: 1px silver solid;
-			border-left: 1px silver solid;
-		}
+			.nav li {
+				display: inline;
+				padding: 5px;
+			}
+
+			.nav li:nth-child(2) {
+				border-right: 1px silver solid;
+				border-left: 1px silver solid;
+			}

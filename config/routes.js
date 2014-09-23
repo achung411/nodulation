@@ -16,49 +16,9 @@ module.exports = function Route(app) {
   			res.redirect('/');
   		};
   	});
- //  	app.get('/welcome', function(req, res) {
- //  		if (typeof req.session.notice !== "undefined") {
- //  			var notice = req.session.notice;
- //  			delete req.session.notice;
- //  		}
- //  		else if (typeof req.session.error !== "undefined") {
- //  			var error = req.session.error;
- //  			delete req.session.error;
- //  		};
- //  		res.render('welcome', { title: 'Welcome', notice: notice, error: error });
-	// });
-	// app.get('/register', function(req, res) {
-	// 	res.render('register', { title: 'Registration'});
-	// });
-	// app.get('/main', function(req, res) {
-	// 	if (typeof req.session.current_user !== "undefined") {
-	// 		// console.log('req.session.current_user: ', req.session.current_user);
-	// 		res.render('main', { title: 'Main', me: req.session.current_user });
-	// 	}
-	// 	else {
-	// 		req.session.notice = "Please log in.";
-	// 		req.session.save(function() {
-	// 			res.redirect('/welcome');
-	// 		})
-	// 	};
-	// });
-	// app.get('/home', function(req, res) {
-	// 	res.render('main', { title: 'Main', me: req.session.current_user });
-	// });
-	// app.get('/profile', function(req, res) {
-	// 	res.render('profile', { title: 'Profile', user: req.session.current_user });
-	// });
+
 	// app.get('/myprofile', function(req, res) {
 	// 	res.render('profile', { title: 'Profile', user: req.session.current_user });
-	// });
-	// app.get('/settings', function(req, res) {
-	// 	if (typeof req.session.current_user !== "undefined") {
-	// 		res.render('settings', { title: 'User Account Settings', me: req.session.current_user });
-	// 	}
-	// 	else {
-	// 		req.session.notice = "Please log in.";
-	// 		res.render('welcome', { title: 'Welcome' });
-	// 	}
 	// });
 
 	app.io.route('/users/create', function(req) {
@@ -79,8 +39,32 @@ module.exports = function Route(app) {
 					}
 				});
 			}
-
 		});
+	});
+
+	app.io.route('/sessions/create', function(req) {
+	    var mail = req.data.email;
+	    var pwd = req.data.password;
+	    User.find({email: mail, password: pwd}, function(err, results) {
+	        if (results.length == 0) {
+	            req.io.emit('error', {error_msg: "There is no user registered with that email and password."});
+	        }
+	        else {
+	        	var found_user = results[0];
+	            req.session.current_user = found_user;
+	            req.session.sessionID = req.sessionID;
+	            req.session.save(function() {
+	            	// console.log("session data: ", req.session);
+	                session_data[req.session.sessionID] = found_user;
+	                // console.log("server log of session data: ", session_data);
+	                req.io.emit('user_authenticated');
+	            });
+	        };
+	    });
+	});
+
+	app.io.route("initialize_connection", function(req) {
+		req.io.emit("initializing", {my_record: req.session.current_user});
 	});
 
 	// app.post('/users/edit', function(req, res) {
@@ -109,31 +93,8 @@ module.exports = function Route(app) {
 	// 					}
 	// 	});
 	// });
-	
-	app.io.route('/sessions/create', function(req) {
-	    var mail = req.data.email;
-	    var pwd = req.data.password;
-	    User.find({email: mail, password: pwd}, function(err, results) {
-	        if (results.length == 0) {
-	            req.io.emit('error', {error_msg: "There is no user registered with that email and password."});
-	        }
-	        else {
-	        	var found_user = results[0];
-	            req.session.current_user = found_user;
-	            req.session.sessionID = req.sessionID;
-	            req.session.save(function() {
-	            	// console.log("session data: ", req.session);
-	                session_data[req.session.sessionID] = found_user;
-	                // console.log("server log of session data: ", session_data);
-	                req.io.emit('user_authenticated');
-	            });
-	        };
-	    });
-	});
 
-	app.io.route("initialize_connection", function(req) {
-		req.io.emit("initializing", {my_record: req.session.current_user});
-	});
+
 
 	// app.post('/pictures/create', function(req, res, next) {
 	// 	var tmp_path = req.files.picture.path;
@@ -219,6 +180,31 @@ module.exports = function Route(app) {
 	// 			}
 	// 		})
 	// });
+
+	app.io.route("/statuses/create", function(req) {
+		console.log("here's our new status", req.data.status);
+		User.findOne({_id: req.session.current_user._id },
+			function(err, result) {
+				if (err) {
+					return handleError(err);
+				}
+				else {
+					console.log("we're gonna modify: ", result);
+					console.log("New status: ", req.data.status);
+					result.status = req.data.status;
+					console.log("Our modified user: ", result);
+					result.save(function(err) {
+						if (err) {
+							return handleError(err);
+						}
+						else {
+							// return res.redirect('/main');
+							req.io.emit("status_updated", {status: req.data.status});
+						}
+					})
+				}
+			})
+	});
 
 	app.get('/signout', function(req, res) {
 		var target_id = req.session.sessionID;
