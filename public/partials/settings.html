@@ -3,7 +3,7 @@
 		<p class="user_name" ng-bind="me.first_name + ' ' + me.last_name"></p>
 		<img ng-src="{{ me.pic }}" alt="profile pic">
 		<p class="italics" ng-bind="me.status"></p>
-		<div class="personal">
+		<!-- <div class="personal"> -->
 			<table>
 				<tbody>
 					<tr>
@@ -20,7 +20,7 @@
 					</tr>
 				</tbody>
 			</table>
-		</div>
+		<!-- </div> -->
 		<h5>Events</h5>
 		<h5>GROUPS<h5>
 		<ul>
@@ -29,38 +29,41 @@
 			<li><a href="">The Baker St. Regulars</a></li>
 		</ul>
 	</div>
+	
 	<div class="col-sm-7">
 		<h1>User Details</h1>
-		<form action="/users/edit" method="post" class="form-horizontal" role="form">
+		<form name="editForm" class="form-horizontal css-form" role="form" novalidate>
 			<div class="form-group">
-				<label for="first_name" class="col-sm-3 control-label">First Name:</label>
+				<label for="first_name" class="col-sm-2 control-label">First Name:</label>
 				<div class="col-sm-9">
-					<input type="text" name="first_name" id="first_name" class="form-control" value="{{ me.first_name }}">	
+					<input type="text" ng-model="me.first_name" id="first_name" class="form-control" required />	
 				</div>
 			</div>
 			<div class="form-group">
-				<label for="last_name" class="col-sm-3 control-label">Last Name:</label>
+				<label for="last_name" class="col-sm-2 control-label">Last Name:</label>
 				<div class="col-sm-9">
-					<input type="text" name="last_name" id="last_name" class="form-control" value="{{ me.last_name }}">
+					<input type="text" ng-model="me.last_name" id="last_name" class="form-control" required />
 				</div>
 			</div>
 			<div class="form-group">
-				<label for="work" class="col-sm-3 control-label">Occupation:</label>
+				<label for="work" class="col-sm-2 control-label">Occupation:</label>
 				<div class="col-sm-9">
-					<input type="text" name="work" id="work" class="form-control" 
-							value="{{ me.work }}">
+					<input type="text" ng-model="me.work" id="work" class="form-control">
 				</div>
 			</div>
 			<div class="form-group">
-				<label for="hometown" class="col-sm-3 control-label">Hometown:</label>
+				<label for="hometown" class="col-sm-2 control-label">Hometown:</label>
 				<div class="col-sm-9">
-					<input type="text" name="hometown" id="hometown" class="form-control"
-							value="{{ me.hometown }}">
+					<input type="text" ng-model="me.hometown" id="hometown" class="form-control">
 				</div>
 			</div>
 			<div class="form-group">
-				<div class="col-sm-9 col-sm-offset-3">
-					<button type="submit" class="btn btn-primary">Save changes</button>
+				<div class="col-sm-2 col-sm-offset-2">
+					<button class="btn btn-primary" ng-click="editUser(me)" ng-disabled="editForm.$invalid">Save changes</button>
+				</div>
+				<div class="col-sm-8">
+					<span class="red" ng-bind="error"></span>
+					<span class="green" ng-bind="notice"></span>
 				</div>
 			</div>
 		</form>
@@ -68,13 +71,13 @@
 		<h2>Upload Profile pic</h2>
 		<form action="/pictures/create" method="post" class="form-horizontal" enctype="multipart/form-data" role="form">
 			<div class="form-group">
-				<label for="picture" class="col-sm-3 control-label">Select Picture:</label>
+				<label for="picture" class="col-sm-2 control-label">Select Picture:</label>
 				<div class="col-sm-9">
 					<input type="file" name="picture" id="picture">
 				</div>
 			</div>
 			<div class="form-group">
-				<div class="col-sm-9 col-sm-offset-3">
+				<div class="col-sm-9 col-sm-offset-2">
 					<button type="submit" class="btn btn-primary">Upload</button>
 				</div>
 			</div>
@@ -83,13 +86,13 @@
 		<h2>Upload Cover photo</h2>
 		<form action="/covers/create" method="post" class="form-horizontal" enctype="multipart/form-data" role="form">
 			<div class="form-group">
-				<label for="cover" class="col-sm-3 control-label">Select Picture:</label>
+				<label for="cover" class="col-sm-2 control-label">Select Picture:</label>
 				<div class="col-sm-9">
 					<input type="file" name="cover" id="cover">
 				</div>
 			</div>
 			<div class="form-group">
-				<div class="col-sm-9 col-sm-offset-3">
+				<div class="col-sm-9 col-sm-offset-2">
 					<button type="submit" class="btn btn-primary">Upload</button>
 				</div>
 			</div>

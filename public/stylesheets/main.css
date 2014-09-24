@@ -3,7 +3,7 @@ body {
 	background-color: #BAC7D8;
 }
 
-input, button, .frame, .frame img {
+input, button, .frame2, .frame2 img {
 	border-radius: 5px;
 }
 
@@ -148,45 +148,46 @@ header {
 			}
 
 		td {
-			padding: 0 5px;
+			vertical-align: top;
+			padding: 0 5px 0 0;
 		}
 
 		.contact_list {
 			background-color: purple;
 		}
 
-.container > div {
+.container, .container > div {
 	padding: 0;
 }
 
 .splash {
 	margin: 0 0 40px 0;
+	min-width: 400px;
 }
 
-	.splash:first-child {
-		min-height: 250px;
-		min-width: 400px;
+	.frame1 img{
+		height: 350px;
 	}
 
 	.persona {
 		position: absolute;
-		top: 200px;
+		top: 225px;
 		left: 20px;
 	}
 
-	.frame, .nav {
+	.frame2, .nav {
 		display: inline-block;
 		vertical-align: top;
 	}
 
-	.frame {
+	.frame2 {
 		background-color: white;
 		border: 1px gray solid;
 		height: 143x;
 		width: 143px;
 	}
 
-		.frame img {
+		.frame2 img {
 			height: 140px;
 			width: 140px;
 			padding: 3px;
@@ -197,13 +198,13 @@ header {
 	}
 
 		.nav h3 {
-			color: gold;
+			color: orange;
+			text-shadow: 2px 2px 1px red;
 			font-size: 2.2em;
 			font-weight: bold;
 		}
 
 		.nav ul {
-			/*background-color: #D0D9E0;*/
 			background: linear-gradient(#D0D9E0, white);
 			border-radius: 10px;
 			border: 1px silver solid;
@@ -221,3 +222,19 @@ header {
 				border-right: 1px silver solid;
 				border-left: 1px silver solid;
 			}
+
+.css-form input.ng-invalid.ng-dirty {
+	background-color: #fa787e;
+}
+
+.css-form input.ng-valid.ng-dirty {
+	background-color: #78fa89;
+}
+
+.green {
+	color: green;
+}
+
+.red {
+	color: red;
+}

@@ -73,31 +73,45 @@
 	    return factory;
 	});
 
-    portal.controller('portalController', function($scope, socket){
-    	$scope.me;
-
+    portal.controller('portalController', function ($scope, socket){
+    	
     	socket.emit("initialize_connection");
 
-    	socket.on("initializing", function(req) {
+    	socket.on("initializing", function (req) {
     		$scope.me = req.my_record;
+    		$scope.everyone_else = req.other_users;
+    		// console.log("my record: ", req.my_record);
+    		// console.log("everyone else: ", req.other_users);
     	});
 
-    	$scope.writeStatus = function(newStatus) {
-    		// console.log("incoming status: ", newStatus);
-    		socket.emit("/statuses/create", {status: newStatus});
+    	$scope.writeStatus = function (newStatus) {
+    		// socket.emit("/statuses/create", {status: newStatus});
+    		socket.emit("/statuses/create", newStatus);
     	};
 
-    	socket.on("status_updated", function(req) {
-    		// console.log("incoming status message: ", req);
-    		// console.log("current user details: ", $scope.me);
+    	socket.on("status_updated", function (req) {
     		$scope.me.status = req.status;
     	});
+
+    	$scope.editUser = function (user) {
+    		socket.emit("/users/edit", user);
+    	};
+
+    	socket.on("incoming_error", function (req) {
+    		console.log("incoming error: ", req);
+    		$scope.error = req;
+    	});
+
+    	socket.on("incoming_msg", function (req) {
+    		console.log("incoming success message: ", req);
+    		$scope.notice = req;
+    	})
 
 	});
 	</script>
 </head>
 <body>
-	<header>
+	<header ng-controller="portalController">
 		<div class="logo col-sm-2">
 			<a href="#/main"><img src="images/logo.png">odular</a>
 		</div>
@@ -106,7 +120,7 @@
 		</div>
 		<div class="col-sm-3">
 			<div class="col-sm-9">
-				<a href="#/profile"><%= me.first_name + " " + me.last_name %></a>
+				<a href="#/profile" ng-bind="me.first_name + ' ' + me.last_name"></a>
 			</div>
 			<div class="col-sm-3">
 				<a href="#/main">Home</a>

@@ -1,7 +1,7 @@
 var mongoose = require('mongoose'),
 	fs = require('fs'),
-	User = mongoose.model('User'),
-	session_data = {};
+	User = mongoose.model('User');
+	// session_data = {};
 
 module.exports = function Route(app) {
 
@@ -41,7 +41,6 @@ module.exports = function Route(app) {
 			}
 		});
 	});
-
 	app.io.route('/sessions/create', function(req) {
 	    var mail = req.data.email;
 	    var pwd = req.data.password;
@@ -54,163 +53,142 @@ module.exports = function Route(app) {
 	            req.session.current_user = found_user;
 	            req.session.sessionID = req.sessionID;
 	            req.session.save(function() {
-	            	// console.log("session data: ", req.session);
-	                session_data[req.session.sessionID] = found_user;
-	                // console.log("server log of session data: ", session_data);
+	                // session_data[req.session.sessionID] = found_user;
 	                req.io.emit('user_authenticated');
 	            });
 	        };
 	    });
 	});
-
 	app.io.route("initialize_connection", function(req) {
-		req.io.emit("initializing", {my_record: req.session.current_user});
+		var current_id = req.session.current_user._id;
+
+		User.find({_id: current_id}, function (err, results) {
+			var my_record = results[0];
+			User
+			.find({})
+			.where('_id')
+			.nin([my_record._id])
+			.select("first_name last_name pic")
+			.exec(function(err, result) {
+				if (err) return handleError(err);
+				req.io.emit("initializing", {my_record: my_record, other_users: result});
+			});
+		});
 	});
-
-	// app.post('/users/edit', function(req, res) {
-	// 	var newInfo = req.body;
-	// 	User.findOne({_id: req.session.current_user._id }, 
-	// 				// {$set: {hometown: newInfo.hometown} }, 
-	// 				function(err, result) {
-	// 					if (err) {
-	// 						// return handleError(err);
-	// 						console.log("Houston, we've got a problem.");
-	// 					}
-	// 					else {
-	// 						result.first_name = newInfo.first_name;
-	// 						result.last_name = newInfo.last_name;
-	// 						result.work = newInfo.work;
-	// 						result.hometown = newInfo.hometown;
-	// 						result.updated_at = new Date();
-	// 						result.save(function(err) {
-	// 							if (err) {
-	// 								console.log("Mo problems: ", err);
-	// 							}
-	// 							else {
-	// 								return res.redirect('/settings');
-	// 							}
-	// 						});
-	// 					}
-	// 	});
-	// });
-
-
-
-	// app.post('/pictures/create', function(req, res, next) {
-	// 	var tmp_path = req.files.picture.path;
-	// 	var target_path = './public/images/pics/' + req.files.picture.name;
-	// 	fs.rename(tmp_path, target_path, function(err) {
-	// 		if (err) throw err;
-	// 		fs.unlink(tmp_path, function() {
-	// 			if (err) {
-	// 				throw err;
-	// 			}
-	// 			else {
-	// 				User.findOne({_id: req.session.current_user._id }, 
-	// 					function(err, result) {
-	// 						if (err) {
-	// 							return handleError(err);
-	// 						}
-	// 						else {
-	// 							result.pic = '/images/pics/' + req.files.picture.name;
-	// 							result.updated_at = new Date();
-	// 							result.save(function(err) {
-	// 								if (err) {
-	// 									return handleError(err);
-	// 								}
-	// 								else {
-	// 									return res.redirect('/settings');
-	// 								}
-	// 							});
-	// 						}
-	// 				})
-	// 			}
-	// 		})
-	// 	});
-	// });
-	// app.post('/covers/create', function(req, res, next) {
-	// 	var tmp_path = req.files.cover.path;
-	// 	var target_path = './public/images/pics/' + req.files.cover.name;
-	// 	fs.rename(tmp_path, target_path, function(err) {
-	// 		if (err) throw err;
-	// 		fs.unlink(tmp_path, function() {
-	// 			if (err) {
-	// 				throw err;
-	// 			}
-	// 			else {
-	// 				User.findOne({_id: req.session.current_user._id }, 
-	// 					function(err, result) {
-	// 						if (err) {
-	// 							return handleError(err);
-	// 						}
-	// 						else {
-	// 							result.cover = '/images/pics/' + req.files.cover.name;
-	// 							result.updated_at = new Date();
-	// 							result.save(function(err) {
-	// 								if (err) {
-	// 									return handleError(err);
-	// 								}
-	// 								else {
-	// 									return res.redirect('/settings');
-	// 								}
-	// 							});
-	// 						}
-	// 				})
-	// 			}
-	// 		})
-	// 	});
-	// });
-	// app.post('/statuses/create', function(req, res) {
-	// 	User.findOne({_id: req.session.current_user._id },
-	// 		function(err, result) {
-	// 			if (err) {
-	// 				return handleError(err);
-	// 			}
-	// 			else {
-	// 				// console.log("New status: ", req.body.new_status);
-	// 				result.status = req.body.new_status;
-	// 				result.save(function(err) {
-	// 					if (err) {
-	// 						return handleError(err);
-	// 					}
-	// 					else {
-	// 						return res.redirect('/main');
-	// 					}
-	// 				})
-	// 			}
-	// 		})
-	// });
-
+	app.io.route("/users/edit", function (req, res) {
+		var newInfo = req.data;
+		User.findOne({_id: req.session.current_user._id }, 
+					function(err, result) {
+						if (err) {
+							req.io.emit('incoming_error', err);
+						}
+						else {
+							result.first_name = newInfo.first_name;
+							result.last_name = newInfo.last_name;
+							result.work = newInfo.work;
+							result.hometown = newInfo.hometown;
+							result.updated_at = new Date();
+							result.save(function(err) {
+								if (err) {
+									req.io.emit('incoming_error', err);
+								}
+								else {
+									req.io.emit('incoming_msg', "You have successfully updated your profile information.");
+								}
+							});
+						}
+		});
+	});
+	app.post('/pictures/create', function (req, res, next) {
+		var tmp_path = req.files.picture.path;
+		var target_path = './public/images/pics/' + req.files.picture.name;
+		fs.rename(tmp_path, target_path, function(err) {
+			if (err) throw err;
+			fs.unlink(tmp_path, function() {
+				if (err) {
+					throw err;
+				}
+				else {
+					User.findOne({_id: req.session.current_user._id }, 
+						function(err, result) {
+							if (err) {
+								return handleError(err);
+							}
+							else {
+								result.pic = '/images/pics/' + req.files.picture.name;
+								result.updated_at = new Date();
+								result.save(function(err) {
+									if (err) {
+										return handleError(err);
+									}
+									else {
+										return res.redirect('/index');
+									}
+								});
+							}
+					})
+				}
+			})
+		});
+	});
+	app.post('/covers/create', function(req, res, next) {
+		var tmp_path = req.files.cover.path;
+		var target_path = './public/images/pics/' + req.files.cover.name;
+		fs.rename(tmp_path, target_path, function(err) {
+			if (err) throw err;
+			fs.unlink(tmp_path, function() {
+				if (err) {
+					throw err;
+				}
+				else {
+					User.findOne({_id: req.session.current_user._id }, 
+						function(err, result) {
+							if (err) {
+								return handleError(err);
+							}
+							else {
+								result.cover = '/images/pics/' + req.files.cover.name;
+								result.updated_at = new Date();
+								result.save(function(err) {
+									if (err) {
+										return handleError(err);
+									}
+									else {
+										return res.redirect('/index');
+									}
+								});
+							}
+						}
+					)
+				}
+			})
+		});
+	});
 	app.io.route("/statuses/create", function(req) {
-		console.log("here's our new status", req.data.status);
 		User.findOne({_id: req.session.current_user._id },
 			function(err, result) {
 				if (err) {
 					return handleError(err);
 				}
 				else {
-					console.log("we're gonna modify: ", result);
-					console.log("New status: ", req.data.status);
-					result.status = req.data.status;
-					console.log("Our modified user: ", result);
+					result.status = req.data;
 					result.save(function(err) {
 						if (err) {
 							return handleError(err);
 						}
 						else {
-							// return res.redirect('/main');
-							req.io.emit("status_updated", {status: req.data.status});
+							req.io.emit("status_updated", {status: req.data});
 						}
-					})
+					});
 				}
-			})
+			}
+		);
 	});
-
-	app.get('/signout', function(req, res) {
+	app.get("/signout", function (req, res) {
 		var target_id = req.session.sessionID;
-		console.log('our target id: ', target_id);
+		console.log("our target id: ", target_id);
 		req.session.destroy(function() {
-			delete session_data[target_id];
+			// delete session_data[target_id];
 			res.redirect('/');
 		});
 	});
@@ -221,8 +199,7 @@ module.exports = function Route(app) {
 			res.send(results);					
 		});
 	});
-
-	app.get('/session', function(req, res) {	// this api call displays the
-		res.send(session_data);				// server's saved session data
-	});
+	// app.get('/session', function(req, res) {	// this api call displays the
+	// 	res.send(session_data);				// server's saved session data
+	// });
 };

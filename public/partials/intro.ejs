@@ -74,9 +74,9 @@
 	portal.controller('welcomeController', function($scope, socket){    	
 
     	// $scope.logged_user = [];		// not sure if i need this just yet...
-    	$scope.notice;
-    	$scope.error_msg;
-    	$scope.reg_error;
+    	// $scope.notice;
+    	// $scope.error_msg;
+    	// $scope.reg_error;
 
     	socket.on('error', function (data) {
     		console.log ('incoming errors: ', data.error_msg);
