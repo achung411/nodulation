@@ -30,7 +30,11 @@
 			.when('/settings',
 			{
 				templateUrl: '/partials/settings.html'
-			})			
+			})
+			.when('/profile/:userid',
+			{
+				templateUrl: '/partials/visitor.html'
+			})	
 			.otherwise({
 				redirectTo: '/main'
 			});
@@ -77,11 +81,13 @@
     	
     	socket.emit("initialize_connection");
 
+    	socket.on("reset", function() {
+    		window.location.href = "/";
+    	});
+
     	socket.on("initializing", function (req) {
     		$scope.me = req.my_record;
     		$scope.everyone_else = req.other_users;
-    		// console.log("my record: ", req.my_record);
-    		// console.log("everyone else: ", req.other_users);
     	});
 
     	$scope.writeStatus = function (newStatus) {
@@ -104,7 +110,49 @@
     	socket.on("incoming_msg", function (req) {
     		console.log("incoming success message: ", req);
     		$scope.notice = req;
-    	})
+    	});
+    });
+
+    portal.controller('visiteeController', function ($scope, socket, $routeParams){
+    	var visitee_id = $routeParams.userid;
+
+    	socket.emit("initialize_visit", visitee_id);
+
+    	socket.on("reset", function() {
+    		window.location.href = "/";
+    	});
+
+    	socket.on("visit_approved", function (req) {
+    		$scope.me = req.my_record;
+    		$scope.visitee = req.visitee_record;
+    	});
+
+    	// socket.on("initializing", function (req) {
+    	// 	$scope.me = req.my_record;
+    	// 	$scope.everyone_else = req.other_users;
+    	// });
+
+    	// $scope.writeStatus = function (newStatus) {
+    	// 	socket.emit("/statuses/create", newStatus);
+    	// };
+
+    	// socket.on("status_updated", function (req) {
+    	// 	$scope.me.status = req.status;
+    	// });
+
+    	// $scope.editUser = function (user) {
+    	// 	socket.emit("/users/edit", user);
+    	// };
+
+    	// socket.on("incoming_error", function (req) {
+    	// 	console.log("incoming error: ", req);
+    	// 	$scope.error = req;
+    	// });
+
+    	// socket.on("incoming_msg", function (req) {
+    	// 	console.log("incoming success message: ", req);
+    	// 	$scope.notice = req;
+    	// });
 
 	});
 	</script>
@@ -116,28 +164,14 @@
 		</div>
 
 		<div class="col-sm-4">
-<!-- 			<input type="text" placeholder="Search for people" ng-model="searchlight">
+			<input type="text" placeholder="Search for people" ng-model="searchlight">
 
 			<div class="friend_search" ng-show="searchlight">
-				<p ng-repeat="person in everyone_else | filter: searchlight">
-					<a ng-href="#/{{person._id}}"><img ng-src="{{person.pic}}"> {{ person.first_name }} {{ person.last_name }}</a>
-				</p> -->
-			<input type="text" placeholder="Search for people" ng-model="searchlight">
-			
-
-			<div class="friend_search" ng-show="searchlight" ng-repeat="person in everyone_else | filter: searchlight">
-				<img ng-src="{{person.pic}}">
-				<div>
-					<a ng-href="#/{{person._id}}">
-						<p>{{ person.first_name }} {{ person.last_name }}</p>
-						<p>{{ person.email }}</p>
-					</a>
-				</div>
-
+				<p ng-repeat="person in everyone_else | filter: searchlight">					
+					<a ng-href="#/profile/{{person._id}}"><img ng-src="{{person.pic}}"> {{ person.first_name }} {{ person.last_name }}</a>
+				</p>
 			</div>
 
-
-			<!-- </div> -->
 		</div>
 
 		<div class="col-sm-3">

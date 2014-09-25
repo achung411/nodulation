@@ -64,12 +64,17 @@ header {
 			background-color: white;
 			max-height: 200px;
 			overflow-y: auto;
+			border: 1px silver solid;
+			border-radius: 5px;
 		}
 
 			.friend_search img {
 				height: 20px;
 				width: 20px;
-				border: none;
+			}
+
+			.contact_info{
+				display: inline-block;
 			}
 
 			.friend_search a, .friend_search a:hover {

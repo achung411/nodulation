@@ -101,7 +101,8 @@
 			socket.emit('/users/create', user);
 		};
 
-	    socket.on('user_authenticated', function(data) {
+	    // socket.on('user_authenticated', function(data) {
+	    socket.on('user_authenticated', function() {
 			window.location.href = "/index";	    	
 	    });
 

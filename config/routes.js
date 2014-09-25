@@ -60,21 +60,45 @@ module.exports = function Route(app) {
 	    });
 	});
 	app.io.route("initialize_connection", function(req) {
-		var current_id = req.session.current_user._id;
+		if (typeof req.session.current_user == "undefined") {
+			// res.redirect('/');
+			req.io.emit("reset");
+		}
+		else {
+			var current_id = req.session.current_user._id;
 
-		User.find({_id: current_id}, function (err, results) {
-			var my_record = results[0];
-			User
-			.find({})
-			.where('_id')
-			.nin([my_record._id])
-			.select("first_name last_name pic")
-			.exec(function(err, result) {
-				if (err) return handleError(err);
-				req.io.emit("initializing", {my_record: my_record, other_users: result});
+			User.find({_id: current_id}, function (err, results) {
+				var my_record = results[0];		// refreshes user settings
+				User 							// gets other users in db
+				.find({})
+				.where('_id')
+				.nin([my_record._id])
+				.select("first_name last_name pic")
+				.exec(function(err, result) {
+					if (err) return handleError(err);
+					req.io.emit("initializing", {my_record: my_record, other_users: result});
+				});
 			});
-		});
+		}
 	});
+	app.io.route("initialize_visit", function(req) {
+		if (typeof req.session.current_user == "undefined") {
+			res.redirect('/');
+		}
+		else {
+			var current_id = req.session.current_user._id;
+			var visitee_id = req.data;
+
+			User.find({_id: current_id}, function (err, results) {
+				var my_record = results[0];						// refreshes user settings
+				User.find({_id: visitee_id}, function (err, results) {	// gets visitor settings
+					if (err) return handleError(err);
+					var visitee_record = results[0];
+					req.io.emit("visit_approved", {my_record: my_record, visitee_record: visitee_record});
+				});
+			});
+		}
+	});	
 	app.io.route("/users/edit", function (req, res) {
 		var newInfo = req.data;
 		User.findOne({_id: req.session.current_user._id }, 
@@ -99,7 +123,7 @@ module.exports = function Route(app) {
 						}
 		});
 	});
-	app.post('/pictures/create', function (req, res, next) {
+	app.post('/pictures/create', function (req, res) {
 		var tmp_path = req.files.picture.path;
 		var target_path = './public/images/pics/' + req.files.picture.name;
 		fs.rename(tmp_path, target_path, function(err) {
@@ -131,7 +155,7 @@ module.exports = function Route(app) {
 			})
 		});
 	});
-	app.post('/covers/create', function(req, res, next) {
+	app.post('/covers/create', function(req, res) {		
 		var tmp_path = req.files.cover.path;
 		var target_path = './public/images/pics/' + req.files.cover.name;
 		fs.rename(tmp_path, target_path, function(err) {
