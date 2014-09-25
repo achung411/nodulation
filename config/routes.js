@@ -186,7 +186,6 @@ module.exports = function Route(app) {
 	});
 	app.get("/signout", function (req, res) {
 		var target_id = req.session.sessionID;
-		console.log("our target id: ", target_id);
 		req.session.destroy(function() {
 			// delete session_data[target_id];
 			res.redirect('/');

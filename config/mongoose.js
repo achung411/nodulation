@@ -1,5 +1,5 @@
-var mongoose = require('mongoose')
-	, fs = require('fs');
+var mongoose = require('mongoose'), 
+	fs = require('fs');
 
 var connect = function () {
 	var options = { server: { socketOptions: { keepAlive: 1 } } }
