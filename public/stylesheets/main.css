@@ -163,7 +163,7 @@ header {
 			background-color: lightgreen;
 		}
 
-			.thumbnail {
+			.notifications img, .contact_list img {
 				height: 30px;
 				width: 30px;
 			}
@@ -178,7 +178,7 @@ header {
 		}
 
 		.contact_list {
-			background-color: purple;
+			background-color: babyblue;
 		}
 
 .container, .container > div {
@@ -235,17 +235,20 @@ header {
 			border: 1px silver solid;
 			list-style-type: none;
 			padding: 5px;
-			width: 213px;
+			/*width: 235px;*/
 		}
 
 			.nav li {
 				display: inline;
 				padding: 5px;
+				border-right: 1px silver solid;
+				/*border-left: 1px silver solid;*/
 			}
 
-			.nav li:nth-child(2) {
-				border-right: 1px silver solid;
-				border-left: 1px silver solid;
+			.nav li:last-child {
+				border-right: none;
+/*				border-right: 1px silver solid;
+				border-left: 1px silver solid;*/
 			}
 
 .css-form input.ng-invalid.ng-dirty {

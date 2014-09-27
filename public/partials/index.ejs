@@ -78,7 +78,8 @@
 	});
 
     portal.controller('portalController', function ($scope, socket){
-    	
+    	$scope.friends_list = [];
+
     	socket.emit("initialize_connection");
 
     	socket.on("reset", function() {
@@ -88,6 +89,19 @@
     	socket.on("initializing", function (req) {
     		$scope.me = req.my_record;
     		$scope.everyone_else = req.other_users;
+    		// console.log("I be: ", $scope.me);
+    		// console.log("You be: ", $scope.everyone_else);
+    		console.log("My friends: ", $scope.me.friends);
+    	});
+
+    	$scope.$on('$destroy', function (event) {
+    		socket.removeAllListeners();
+    	});
+
+    	socket.on("friend_packet", function (req) {
+    		console.log("incoming friend: ", req);
+    		$scope.friends_list.push(req);
+    		console.log("my friends so far: ", $scope.friends_list);
     	});
 
     	$scope.writeStatus = function (newStatus) {
@@ -103,19 +117,18 @@
     	};
 
     	socket.on("incoming_error", function (req) {
-    		console.log("incoming error: ", req);
     		$scope.error = req;
     	});
 
     	socket.on("incoming_msg", function (req) {
-    		console.log("incoming success message: ", req);
     		$scope.notice = req;
     	});
     });
 
     portal.controller('visiteeController', function ($scope, socket, $routeParams){
-    	var visitee_id = $routeParams.userid;
 
+    	var visitee_id = $routeParams.userid;
+    	// console.log("visitee_id: ", visitee_id);
     	socket.emit("initialize_visit", visitee_id);
 
     	socket.on("reset", function() {
@@ -126,6 +139,11 @@
     		$scope.me = req.my_record;
     		$scope.visitee = req.visitee_record;
     	});
+
+    	$scope.addFriend = function (target_id) {
+    		// console.log("target id is: ", target_id);
+    		socket.emit("/friends/create", target_id);
+    	};
 
     	// socket.on("initializing", function (req) {
     	// 	$scope.me = req.my_record;
@@ -144,10 +162,10 @@
     	// 	socket.emit("/users/edit", user);
     	// };
 
-    	// socket.on("incoming_error", function (req) {
-    	// 	console.log("incoming error: ", req);
-    	// 	$scope.error = req;
-    	// });
+    	socket.on("incoming_error", function (req) {
+    		console.log("incoming error: ", req);
+    		$scope.error = req;
+    	});
 
     	// socket.on("incoming_msg", function (req) {
     	// 	console.log("incoming success message: ", req);
@@ -157,8 +175,8 @@
 	});
 	</script>
 </head>
-<body>
-	<header ng-controller="portalController">
+<body ng-controller="portalController">
+	<header>
 		<div class="logo col-sm-2">
 			<a href="#/main"><img src="images/logo.png">odular</a>
 		</div>
@@ -183,7 +201,7 @@
 			</div>
 		</div>
 		<div class="col-sm-2">
-			<a href=""><i class="fa fa-users"></i></a>
+			<a href=""><i class="fa fa-users" ng-click="test()"></i></a>
 			<a href=""><i class="fa fa-comments-o"></i></a>					
 			<a href=""><i class="fa fa-bell-o"></i></a>
 			<a href="#/settings"><i class="fa fa-cogs"></i></a>
@@ -210,11 +228,9 @@
 				<p><a href=""><span class="user_name">John Watson</span></a> likes Sherlock Holmes' post.</p>
 			</div>
 			<div class="contact_list">
-				<p>Sherlock Holmes</p>
-				<p>Mrs. Hudson</p>
-				<p>Greg Lestrade</p>
-				<p>John Watson</p>
-				<p>Jim Moriarty</p>
+				<p ng-repeat="person in friends_list">					
+					<a ng-href="#/profile/{{person._id}}"><img ng-src="{{person.pic}}"> {{ person.first_name }} {{ person.last_name }}</a>
+				</p>
 			</div>
 		</div>
 	</div>

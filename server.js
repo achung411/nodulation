@@ -7,7 +7,7 @@ var fs = require('fs'),
 app.configure(function() {
     app.use(express.cookieParser());
     app.use(express.bodyParser({ uploaddir: __dirname + '/uploads',
-        limit: 3000000,
+        limit: 4000000,
         keepExtensions: true}))
     app.use(express.json());
     app.use(express.urlencoded());

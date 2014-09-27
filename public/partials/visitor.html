@@ -11,9 +11,11 @@
 			<div class="nav">
 				<h3 ng-bind="visitee.first_name + ' ' + visitee.last_name"></h3>			
 				<ul>
-					<li><a href="">Befriend</a></li>
-					<li><a href="">Message</a></li>
-					<li><a href="#/othersfriends">Friends</a></li>
+					<li ng-hide=(false)><a href="">Add Friend</a></li>
+					<li ng-show=(false)><i class="fa fa-check"></i><a href="" ng-click="addFriend(visitee._id)">Friend</a></li>
+					<li><a href="" ng-click="addFriend(visitee._id)">Message</a></li>
+					<li><a href="" ng-click="addFriend(visitee._id)">Friends List</a></li>
+
 				</ul>
 			</div>
 		</div>

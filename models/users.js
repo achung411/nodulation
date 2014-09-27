@@ -13,6 +13,7 @@ var UserSchema = new mongoose.Schema({
 	status_created_at: { type: Date },
 	pic: String,
 	cover: String,
+	friends: Array,
 	hidden: Boolean
 });
 UserSchema.path('first_name').required(true, 'Please fill out your first name.');
