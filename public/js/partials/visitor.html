@@ -12,7 +12,7 @@
 				<h3 ng-bind="visitee.first_name + ' ' + visitee.last_name"></h3>			
 				<ul>
 					<li ng-hide="friendly" ng-click="addFriend(visitee._id)"><a href="">Add Friend</a></li>
-					<li ng-show="friendly"><i class="fa fa-check"></i><a href="">Friend</a></li>
+					<li ng-show="friendly" ng-click="dropFriend(visitee._id)"><i class="fa fa-check"></i><a href="">Friend</a></li>
 					<li><a href="">Message</a></li>
 					<li><a href="">Friends List</a></li>
 				</ul>

@@ -3,24 +3,22 @@
 		<p class="user_name" ng-bind="me.first_name + ' ' + me.last_name"></p>
 		<img ng-src="{{ me.pic }}" alt="profile pic">
 		<p class="italics" ng-bind="me.status"></p>
-		<!-- <div class="personal"> -->
-			<table>
-				<tbody>
-					<tr>
-						<td>E-mail:</td>
-						<td ng-bind="me.email"></td>
-					</tr>
-					<tr>
-						<td>Work:</td>
-						<td ng-bind="me.work"></td>
-					</tr>
-					<tr>
-						<td>Hometown:</td>
-						<td ng-bind="me.hometown"></td>
-					</tr>
-				</tbody>
-			</table>
-		<!-- </div> -->
+		<table>
+			<tbody>
+				<tr>
+					<td class="category">E-mail:</td>
+					<td ng-bind="me.email"></td>
+				</tr>
+				<tr>
+					<td class="category">Work:</td>
+					<td ng-bind="me.work"></td>
+				</tr>
+				<tr>
+					<td class="category">Hometown:</td>
+					<td ng-bind="me.hometown"></td>
+				</tr>
+			</tbody>
+		</table>
 		<h5>Events</h5>
 		<h5>GROUPS<h5>
 		<ul>

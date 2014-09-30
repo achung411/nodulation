@@ -101,8 +101,12 @@ header {
 	background-color: lightblue;
 }
 
+.italics {
+	font-style: italic;
+}
+
 	.sidebar {		/* don't need sidebar styles just yet. maybe later. */
-		border: 1px solid yellow;
+		/*border: 1px solid yellow;*/
 		/*height: 300px;*/
 	}
 
@@ -110,14 +114,6 @@ header {
 			border: 1px solid white;
 			height: 100px;
 			width: 100px;
-		}*/
-
-.italics {
-	font-style: italic;
-}
-
-/*		h3 {
-			font-size: 0.9em;
 		}*/
 
 		.sidebar ul {

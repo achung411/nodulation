@@ -1,5 +1,4 @@
 var express = require('express.io'),
-    fs = require('fs'),
     path = require('path'),
     http = require('http'),
     app = express().http().io(),
@@ -28,4 +27,5 @@ if ('development' == app.get('env')) {
 var server = app.listen(1111);
 
 require('./config/routes')(app);
+require('./config/events')(app);
 console.log("Express server listening on port 1111");

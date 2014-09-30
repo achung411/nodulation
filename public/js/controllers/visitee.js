@@ -11,12 +11,8 @@ portal.controller('visiteeController', function ($scope, socket, $routeParams){
 
 	socket.on("visit_approved", function (req) {
 		$scope.me = req.my_record;
-		// console.log("I am[vis]: ", $scope.me);
 		$scope.visitee = req.visitee_record;
-		console.log("I am visiting[vis]: ", $scope.visitee);
-		// console.log("My friends are[vis]: ", $scope.me.friends);
 		var num_friends = $scope.me.friends.length;
-		// console.log("I have ", num_friends, " friends");
 		for (var i=0; i<num_friends; i++) {
 			if ($scope.visitee._id == $scope.me.friends[i]) {
 				$scope.friendly = true;
@@ -33,7 +29,14 @@ portal.controller('visiteeController', function ($scope, socket, $routeParams){
 	});
 
  	socket.on("made_a_friend", function (req) {
-		console.log("We've received a confirmation in our visitee controller");
+		$scope.friendly = true;
 	});
 
+	$scope.dropFriend = function (target_id) {
+		socket.emit("/friends/destroy", target_id);
+	};
+
+ 	socket.on("unfriended", function() {
+ 		$scope.friendly = false;
+ 	});
 });
