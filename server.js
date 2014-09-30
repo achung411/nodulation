@@ -1,33 +1,31 @@
-var fs = require('fs'),
-    express = require('express.io'),
+var express = require('express.io'),
+    fs = require('fs'),
     path = require('path'),
     http = require('http'),
-    app = express().http().io();
-
-app.configure(function() {
-    app.use(express.cookieParser());
-    app.use(express.bodyParser({ uploaddir: __dirname + '/uploads',
-        limit: 4000000,
-        keepExtensions: true}))
-    app.use(express.json());
-    app.use(express.urlencoded());
-    app.use(express.static(path.join(__dirname, 'public')));
-    app.use(express.session({secret: 'monkey'}));
-    app.set('view engine', 'ejs');
-    app.set('port', process.env.PORT || 1111);
-    app.set('views', path.join(__dirname, 'public/partials'));
-    app.use(express.logger('dev'));
-    app.use(express.methodOverride());
-    app.use(app.router);
-});
-
-var mongoose = require('./config/mongoose');
-var routes = require('./config/routes')(app);
-
+    app = express().http().io(),
+    config = require('./config/mongoose');
+// configure environments
+app.configure(function(){
+ app.set('views', path.join(__dirname, '/public/js/partials/'));
+ app.set('view engine', 'ejs');
+ app.use(express.favicon());
+ app.use(express.logger('dev'));
+ app.use(express.json());
+ app.use(express.urlencoded());
+ app.use(express.bodyParser({ uploaddir: __dirname + '/uploads',
+    limit: 4000000,
+    keepExtensions: true})); //to allow handling of POST data
+ app.use(express.cookieParser()); //to allow session handling
+ app.use(express.session({secret: 'monkey'})); //for using sessions
+ app.use(express.methodOverride());
+ app.use(app.router);
+ app.use(express.static(path.join(__dirname, 'public')));
+})
 // development only
 if ('development' == app.get('env')) {
-    app.use(express.errorHandler());
+  app.use(express.errorHandler());
 }
+var server = app.listen(1111);
 
-app.listen(1111);
-console.log('Express server listening on port ' + app.get('port'));
+require('./config/routes')(app);
+console.log("Express server listening on port 1111");

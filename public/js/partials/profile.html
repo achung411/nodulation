@@ -1,0 +1,86 @@
+<div class="container" ng-controller="portalController">
+
+	<div class="col-sm-12 splash">
+		<div class="frame1">
+			<img ng-src="{{ me.cover }}" alt="">
+		</div>
+		<div class="persona">
+			<div class="frame2">
+				<img ng-src="{{ me.pic }}" alt="">
+			</div>
+			<div class="nav">
+				<h3 ng-bind="me.first_name + ' ' + me.last_name"></h3>			
+				<ul>
+					<li><a href="">Friends</a></li>
+					<li><a href="">Message</a></li>
+					<li><a href="#/settings">Update Info</a></li>
+				</ul>
+			</div>
+		</div>
+	</div>
+
+	<div class="sidebar col-sm-3">
+		<p class="italics" ng-bind="me.status"></p>
+		<h3>About</h3>
+		<p><span class="category">Name: </span><span ng-bind="me.first_name + ' ' + me.last_name"></span></p>
+		<p><span class="category">Occupation: </span><span ng-bind="me.work"></span></p>
+		<p><span class="category">Hometown: </span><span ng-bind="me.hometown"></span></p>
+		<h5>Events</h5>
+		<h5>GROUPS</h5>
+		<ul>
+			<li><a href="">St. Barts classes</a></li>
+			<li><a href="">St. Barts alumni</a></li>
+			<li><a href="">The Baker St. Regulars</a></li>
+		</ul>
+	</div>
+	<div class="newsfeed col-sm-7">
+		<div class="well status">
+			<i class="fa fa-pencil-square-o"></i>
+			<p>Update Status</p>
+			<form name="statusForm">
+				<textarea class="form-control" rows="3" ng-model="new_status">What's on your mind?</textarea>
+				<button class="btn-primary" ng-click="writeStatus(new_status)">Post Status</button>
+			</form>
+		</div>
+
+		<div class="well">
+			<p class="user_name"><a href="">John Watson</a></p>
+			<p>OMG OMG OMG.  Dr. Who is baaaack!!!! I'm soooo excited.  It seems like I've been waiting forever.</p>
+			<ul>
+				<li><a href="">Like</a></li>
+				<li><a href="">Comment</a></li>
+				<li><a href="">Share</a></li>
+			</ul>
+			<div class="well">
+				<p class="user_name"><a href="">Jim Moriarty</a></p>
+				<p>He's not the only one...</p>
+				<ul>
+					<li><a href="">Like</a></li>
+					<li><a href="">Comment</a></li>
+					<li><a href="">Share</a></li>
+				</ul>
+				<form role="form">
+					<input type="text" name="comment" placeholder="Write a comment...">
+					<button type="submit" class="btn-primary">Comment</button>
+				</form>
+			</div>
+			<form role="form">
+				<input type="text" name="comment" placeholder="Write a comment...">
+				<button type="submit" class="btn-primary">Comment</button>
+			</form>
+		</div>
+		<div class="well">
+			<p class="user_name"><a href="">Irene Adler</a></p>
+			<p>I'm not dead.  Let's have dinner</p>
+			<ul>
+				<li><a href="">Like</a></li>
+				<li><a href="">Comment</a></li>
+				<li><a href="">Share</a></li>
+			</ul>
+			<form role="form">
+				<input type="text" name="comment" placeholder="Write a comment...">
+				<button type="submit" class="btn-primary">Comment</button>
+			</form>
+		</div>
+	</div>
+</div>

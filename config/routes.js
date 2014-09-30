@@ -1,6 +1,7 @@
 var mongoose = require('mongoose'),
 	fs = require('fs'),
-	User = mongoose.model('User');
+	User = mongoose.model('User'),
+	users = require('./../server/controllers/users.js');
 
 module.exports = function Route(app) {
 
@@ -8,17 +9,15 @@ module.exports = function Route(app) {
 		return array.indexOf(value) > -1;
 	};
 
-	app.get('/', function(req, res) {
-  		res.render('intro', { title: 'Welcome' });
-  	});
-  	app.get('/index', function(req, res) {
-  		if (typeof req.session.current_user !== "undefined") {
-  			res.render('index', { title: 'Nodular', me: req.session.current_user });
-  		}
-  		else {
-  			res.redirect('/');
-  		};
-  	});
+	app.get('/', function (req, res) { users.intro(req, res) });
+	app.get('/index', function (req, res) { users.index(req, res) });
+	app.post('/pictures/create', function (req, res) { users.create_picture(req, res) } );
+	app.post('/covers/create', function (req, res) { users.create_cover(req, res) } );
+	app.get("/signout", function (req, res) { users.signout(req, res) });
+// ------------------- for debugging purposes ---------------
+	app.get('/test', function(req, res) { users.test(req, res) });
+
+
 	app.io.route('/users/create', function(req) {
 		var new_user = req.data;
 		var email_address = req.data.email;
@@ -88,6 +87,7 @@ module.exports = function Route(app) {
 							var my_friends = my_record.friends;
 							var numfriends = my_record.friends.length;
 							for (var i=0; i < numfriends; i++) {
+
 								User
 								.find({_id: my_friends[i]})
 								.select("first_name last_name pic")
@@ -115,7 +115,7 @@ module.exports = function Route(app) {
 			var visitee_id = req.data;
 
 			User.find({_id: current_id}, function (err, results) {
-				var my_record = results[0];						// refreshes user settings
+				var my_record = results[0];								// refreshes user settings
 				User.find({_id: visitee_id}, function (err, results) {	// gets visitor settings
 					if (err) return handleError(err);
 					var visitee_record = results[0];
@@ -127,98 +127,26 @@ module.exports = function Route(app) {
 	app.io.route("/users/edit", function (req, res) {
 		var newInfo = req.data;
 		User.findOne({_id: req.session.current_user._id }, 
-					function(err, result) {
+			function(err, result) {
+				if (err) {
+					req.io.emit('incoming_error', err);
+				}
+				else {
+					result.first_name = newInfo.first_name;
+					result.last_name = newInfo.last_name;
+					result.work = newInfo.work;
+					result.hometown = newInfo.hometown;
+					result.updated_at = new Date();
+					result.save(function(err) {
 						if (err) {
 							req.io.emit('incoming_error', err);
 						}
 						else {
-							result.first_name = newInfo.first_name;
-							result.last_name = newInfo.last_name;
-							result.work = newInfo.work;
-							result.hometown = newInfo.hometown;
-							result.updated_at = new Date();
-							result.save(function(err) {
-								if (err) {
-									req.io.emit('incoming_error', err);
-								}
-								else {
-									req.io.emit('incoming_msg', "Your profile has been updated.");
-								}
-							});
+							req.io.emit('incoming_msg', "Your profile has been updated.");
 						}
-		});
-	});
-	app.post('/pictures/create', function (req, res) {
-		var tmp_path = req.files.picture.path;
-		var target_path = './public/images/pics/' + req.files.picture.name;
-		fs.rename(tmp_path, target_path, function(err) {
-			if (err) throw err;
-			fs.unlink(tmp_path, function() {
-				if (err) {
-					throw err;
+					});
 				}
-				else {
-					User.findOne({_id: req.session.current_user._id }, 
-						function(err, result) {
-							if (err) {
-								return handleError(err);
-							}
-							else {
-								result.pic = '/images/pics/' + req.files.picture.name;
-								result.updated_at = new Date();
-								result.save(function(err) {
-									if (err) {
-										return handleError(err);
-									}
-									else {
-										return res.redirect('/index');
-									}
-								});
-							}
-						}
-					);
-				}
-			})
 		});
-	});
-	app.post('/covers/create', function(req, res) {		
-		var tmp_path = req.files.cover.path;
-		var target_path = './public/images/pics/' + req.files.cover.name;
-		fs.rename(tmp_path, target_path, function(err) {
-			// if (err) throw err;
-			if (err) {
-				return handleError(err);
-			}
-			else {
-				fs.unlink(tmp_path, function() {
-					if (err) {
-						// throw err;
-						return handleError(err);
-					}
-					else {
-						User.findOne({_id: req.session.current_user._id }, 
-							function(err, result) {
-								if (err) {
-									return handleError(err);
-								}
-								else {
-									result.cover = '/images/pics/' + req.files.cover.name;
-									result.updated_at = new Date();
-									result.save(function(err) {
-										if (err) {
-											return handleError(err);
-										}
-										else {
-											return res.redirect('/index');
-										}
-									});
-								}
-							}
-						)
-					}
-				});
-			}
-		});	
 	});
 	app.io.route("/statuses/create", function(req) {
 		User.findOne({_id: req.session.current_user._id}, function(err, result) {
@@ -238,8 +166,6 @@ module.exports = function Route(app) {
 			};
 		});
 	});
-
-	// ---------------------------- not done yet -----------------
 	app.io.route("/friends/create", function (req, res) {
 		var friend_id = req.data;
 		var me = req.session.current_user;
@@ -274,8 +200,18 @@ module.exports = function Route(app) {
 										return handleError (err);
 									}
 									else {
-										console.log("we made a friend!");
-										req.io.emit("friend_made");
+										User
+										.findOne({_id: me._id})
+										.select("friends")
+										.exec(function (err, returned_info) {
+											if (err) {
+												return handleError(err);
+											}
+											else {
+												req.io.emit("made_a_friend", {new_friendlist: returned_info.friends});
+												console.log("returned results: ", returned_info.friends);
+											}
+										});
 									}
 								});
 							};
@@ -283,19 +219,6 @@ module.exports = function Route(app) {
 					}
 				});
 			}
-		});
-	});
-	app.get("/signout", function (req, res) {
-		var target_id = req.session.sessionID;
-		req.session.destroy(function() {
-			res.redirect('/');
-		});
-	});
-
-// ------------------- for debugging purposes ---------------
-	app.get('/test', function(req, res) {		// this api call displays 
-		User.find({}, function(err, results) {  // all users in the database
-			res.send(results);					
 		});
 	});
 };

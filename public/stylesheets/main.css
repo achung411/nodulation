@@ -3,8 +3,17 @@ body {
 	background-color: #BAC7D8;
 }
 
+input {
+	padding: 1px 4px;
+}
+
 input, button, .frame2, .frame2 img {
 	border-radius: 5px;
+}
+
+i {
+	color: #913027;
+	margin: 5px 7px;
 }
 
 a:hover {
@@ -23,41 +32,34 @@ header {
 		padding: 0 2px;
 	}
 
-	i {
-		color: #913027;
-		margin: 5px 7px;
-	}
-
 		header a:hover, header i:hover {
 			color: #D1694E;
 			text-decoration: none;
 		}
 
-	.logo {
+	header .logo {
 		font-size: 2em;
 		font-weight: bold;
 		position: relative;
 		top: -9px;
 	}
 
-		.logo img {
+		header .logo img {
 			position: relative;
 			top: -1px;
 			left: 4px;
 		}
 
-		.logo a:hover {
+		header .logo a:hover {
 			color: white;
 		}
 
 	header input {
 		color: black;
 		width: 400px;
-		margin: 0;
-		/*padding: 0 10px;*/
 	}
 
-		.friend_search {
+		header .friend_search {
 			z-index: 10;
 			position: absolute;
 			width: 400px;
@@ -68,53 +70,55 @@ header {
 			border-radius: 5px;
 		}
 
-			.friend_search img {
+			header .friend_search img {
 				height: 20px;
 				width: 20px;
 			}
 
-			.contact_info{
+/*			.contact_info{
 				display: inline-block;
-			}
+			}*/
 
-			.friend_search a, .friend_search a:hover {
+			header .friend_search a, header .friend_search a:hover {
 				color: black;
 			}
 
 .main_content, .right_sidebar {
 	display: inline-block;
 	vertical-align: top;
-	padding: 0;
+	/*padding: 0;*/
 }
 
 	.main_content a, .right_sidebar a {
 		color: #6F0904;
 	}
 
-		.main_content form {
-			margin: 50px 0;
-		}
+	.main_content form {
+		margin: 50px 0;
+	}
 		
 .right_sidebar {
 	background-color: lightblue;
 }
 
-	.sidebar {
-		height: 300px;
+	.sidebar {		/* don't need sidebar styles just yet. maybe later. */
+		border: 1px solid yellow;
+		/*height: 300px;*/
 	}
 
-		.profile {
+/*		.profile {
+			border: 1px solid white;
 			height: 100px;
 			width: 100px;
-		}
+		}*/
 
-		.italics {
-			font-style: italics;
-		}
+.italics {
+	font-style: italic;
+}
 
-		h3 {
+/*		h3 {
 			font-size: 0.9em;
-		}
+		}*/
 
 		.sidebar ul {
 			list-style-type: none;
@@ -122,36 +126,35 @@ header {
 			left: -40px;
 		}
 
-		.status {
-			padding: 10px;
+	.status {
+		padding: 10px;
+	}
+
+		.status p {
+			font-weight: bold;
+			/*background-color: #CCE9EF;*/
+			display: inline;
 		}
 
-			.status p {
-				font-weight: bold;
-				background-color: #CCE9EF;
-				display: inline;
-			}
+		.status form {
+			margin: 0 10px;
+		}
 
-			.status form {
-				margin: 0 10px;
-			}
+		.status textarea {
+			margin: 0 0 10px 0;
+		}
 
-			.status textarea {
-				margin: 0 0 10px 0;
-			}
+		.well li {
+			display: inline;
+			margin: 0 10px;
+		}
 
-			.well li {
-				display: inline;
-				margin: 0 10px;
-			}
+		.well input {
+			width: 70%;
+		}
 
-			.well input {
-				padding: 2px 3px;
-				width: 70%;
-			}
-
-			.well button {
-			}
+/*		.well button {
+		}*/
 
 		.notifications, .contact_list {
 			height: 250px;
@@ -166,22 +169,23 @@ header {
 			.notifications img, .contact_list img {
 				height: 30px;
 				width: 30px;
+				margin: 0 5px;
 			}
 
-			.user_name {
-				font-weight: bold;
-			}
+.user_name, .category {
+	font-weight: bold;
+}
 
 		td {
 			vertical-align: top;
 			padding: 0 5px 0 0;
 		}
 
-		.contact_list {
-			background-color: babyblue;
-		}
+	.contact_list {
+		background-color: babyblue;
+	}
 
-.container, .container > div {
+.container, .container > div, .main_content, .right_sidebar {
 	padding: 0;
 }
 
@@ -190,35 +194,35 @@ header {
 	min-width: 400px;
 }
 
-	.frame1 img{
+	.splash .frame1 img{
 		height: 350px;
 	}
 
-	.persona {
+	.splash .persona {
 		position: absolute;
 		top: 225px;
 		left: 20px;
 	}
 
-	.frame2, .nav {
-		display: inline-block;
-		vertical-align: top;
-	}
-
-	.frame2 {
-		background-color: white;
-		border: 1px gray solid;
-		height: 143x;
-		width: 143px;
-	}
-
-		.frame2 img {
-			height: 140px;
-			width: 140px;
-			padding: 3px;
+		.persona .frame2, .persona .nav {
+			display: inline-block;
+			vertical-align: top;
 		}
 
-	.nav {
+		.persona .frame2 {
+			background-color: white;
+			border: 1px gray solid;
+			height: 143x;
+			width: 143px;
+		}
+
+			.persona .frame2 img {
+				height: 140px;
+				width: 140px;
+				padding: 3px;
+			}
+
+	.splash .nav {
 		margin: 20px 0 0 10px;
 	}
 
