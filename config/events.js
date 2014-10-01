@@ -96,7 +96,7 @@ app.io.route("initialize_connection", function(req) {
 	});
 	app.io.route("initialize_visit", function(req) {
 		if (typeof req.session.current_user == "undefined") {
-			res.redirect('/');
+			req.io.emit("reset");
 		}
 		else {
 			var current_id = req.session.current_user._id;
@@ -143,6 +143,7 @@ app.io.route("initialize_connection", function(req) {
 			}
 			else {
 				result.status = req.data;
+				result.updated_at = new Date();
 				result.save(function(err) {
 					if (err) {
 						return handleError (err);
@@ -168,6 +169,7 @@ app.io.route("initialize_connection", function(req) {
 			}
 			else {
 				result.friends.push(my_id);
+				result.updated_at = new Date();
 				result.save(function (err) {
 					if (err) {
 						return handleError (err);
@@ -182,20 +184,21 @@ app.io.route("initialize_connection", function(req) {
 							}
 							else {
 								data.friends.push(friend_id);
+								data.updated_at = new Date();
 								data.save(function (err) {
 									if (err) {
 										return handleError (err);
 									}
 									else {
 										User
-										.findOne({_id: my_id})
-										.select("friends")
+										.find({_id: friend_id})
+										.select("first_name last_name pic")
 										.exec(function (err, returned_info) {
 											if (err) {
 												return handleError(err);
 											}
 											else {
-												req.io.emit("made_a_friend", {new_friendlist: returned_info.friends});
+												req.io.emit("made_a_friend", {new_friend: returned_info[0]});
 											}
 										});
 									}
@@ -210,6 +213,7 @@ app.io.route("initialize_connection", function(req) {
 	app.io.route("/friends/destroy", function (req, res) {
 		var friend_id = req.data;
 		var my_id = req.session.current_user._id;
+		var friendlist = [];
 
 		User.findOne({_id: friend_id}, function (err, result) {		// find friend
 			if (err) {
@@ -218,16 +222,18 @@ app.io.route("initialize_connection", function(req) {
 			else {
 				var target_id = 0;									// remove me from friend's friend list
 				for (var i=0; i<result.friends.length; i++) {
-					if (result.friends[i] == me._id) {
+					if (result.friends[i] == my_id) {
 						target_id = i;
 					}
 				}
 				result.friends.splice(target_id, 1);
+				result.updated_at = new Date();
 				result.save(function (err) {
 					if (err) {
 						return handleError(err);
 					}
 					else {
+						friendlist = result.friends;
 						User.findOne({_id: my_id}, function (err, data) {	// find me
 							if (err) {
 								return handleError(err);
@@ -240,12 +246,13 @@ app.io.route("initialize_connection", function(req) {
 									}
 								}
 								data.friends.splice(new_target, 1);
+								data.updated_at = new Date();
 								data.save(function (err) {
 									if (err) {
 										return handleError(err);
 									}
 									else {
-										req.io.emit("unfriended");
+										req.io.emit("unfriended", {dropped_friend: friend_id});
 									}
 								});
 							}
@@ -255,4 +262,8 @@ app.io.route("initialize_connection", function(req) {
 			}
 		});
 	});
+	app.io.route("PING", function(req, res) {
+		console.log("Caught the ping!");
+		req.io.emit("PONG");
+	})
 }

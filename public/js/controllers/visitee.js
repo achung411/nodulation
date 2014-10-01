@@ -5,9 +5,9 @@ portal.controller('visiteeController', function ($scope, socket, $routeParams){
 	var visitee_id = $routeParams.userid;
 	socket.emit("initialize_visit", visitee_id);
 
-	$scope.$on('$destroy', function (event) {
-		socket.removeAllListeners();
-	});
+	// $scope.$on('$destroy', function (event) {
+	// 	socket.removeAllListeners();
+	// });
 
 	socket.on("visit_approved", function (req) {
 		$scope.me = req.my_record;
@@ -38,5 +38,14 @@ portal.controller('visiteeController', function ($scope, socket, $routeParams){
 
  	socket.on("unfriended", function() {
  		$scope.friendly = false;
+ 	});
+
+ 	$scope.ping = function () {
+ 		console.log("pinging away!");
+ 		socket.emit("PING");
+ 	};
+
+ 	socket.on("PONG", function() {
+ 		console.log("We all love PONG here in the visitor page!");
  	});
 });

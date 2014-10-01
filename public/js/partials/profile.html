@@ -1,6 +1,6 @@
 <div class="container" ng-controller="portalController">
 
-	<div class="col-sm-12 splash">
+	<div class="col-xs-12 splash">
 		<div class="frame1">
 			<img ng-src="{{ me.cover }}" alt="">
 		</div>
@@ -11,7 +11,7 @@
 			<div class="nav">
 				<h3 ng-bind="me.first_name + ' ' + me.last_name"></h3>			
 				<ul>
-					<li><a href="">Friends</a></li>
+					<li ng-click="showFriends()"><a href="">Friends</a></li>
 					<li><a href="">Message</a></li>
 					<li><a href="#/settings">Update Info</a></li>
 				</ul>
@@ -19,7 +19,7 @@
 		</div>
 	</div>
 
-	<div class="sidebar col-sm-3">
+	<div class="sidebar col-xs-3">
 		<p class="italics" ng-bind="me.status"></p>
 		<h3>About</h3>
 		<table>
@@ -50,7 +50,7 @@
 			<li><a href="">The Baker St. Regulars</a></li>
 		</ul>
 	</div>
-	<div class="newsfeed col-sm-7">
+	<div class="newsfeed col-xs-7">
 		<div class="well status">
 			<i class="fa fa-pencil-square-o"></i>
 			<p>Update Status</p>

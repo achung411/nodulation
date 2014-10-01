@@ -10,6 +10,7 @@
 	<script src="/js/app.js"></script>
 	<script src="/js/portal_routes.js"></script>
 	<script src="/js/services/socketfactory.js"></script>
+	<script src="/js/services/conduitservice.js"></script>
 	<script src="/js/controllers/nav.js"></script>
 	<script src="/js/controllers/portal.js"></script>
 	<script src="/js/controllers/visitee.js"></script>	
@@ -20,10 +21,10 @@
 </head>
 <body ng-controller="navController">
 	<header>
-		<div class="logo col-sm-2">
+		<div class="logo col-xs-2">
 			<a href="#/main"><img src="images/logo.png">odular</a>
 		</div>
-		<div class="col-sm-4">
+		<div class="col-xs-4">
 			<input type="text" placeholder="Search for people" ng-model="searchlight">
 			<div class="friend_search" ng-show="searchlight">
 				<p ng-repeat="person in everyone_else | filter: searchlight">					
@@ -31,30 +32,30 @@
 				</p>
 			</div>
 		</div>
-		<div class="col-sm-3">
-			<div class="col-sm-9">
+		<div class="col-xs-3">
+			<div class="col-xs-9">
 				<a href="#/profile" ng-bind="me.first_name + ' ' + me.last_name"></a>
 			</div>
-			<div class="col-sm-3">
+			<div class="col-xs-3">
 				<a href="#/main">Home</a>
 			</div>
 		</div>
-		<div class="col-sm-2">
+		<div class="col-xs-2">
 			<a href=""><i class="fa fa-users" ng-click="test()"></i></a>
 			<a href=""><i class="fa fa-comments-o"></i></a>					
-			<a href=""><i class="fa fa-bell-o"></i></a>
+			<a href=""><i class="fa fa-bell-o" ng-click="ping()"></i></a>
 			<a href="#/settings"><i class="fa fa-cogs"></i></a>
 		</div>
-		<div class="col-sm-1">
+		<div class="col-xs-1">
 			<a href="/signout">Sign out</a>
 		</div>
 	</header>
 
-	<div class="col-sm-12">
+	<div class="col-xs-12">
 
-		<div class="main_content col-sm-9" ng-view></div>
+		<div class="main_content col-xs-9" ng-view></div>
 
-		<div class="right_sidebar col-sm-3">
+		<div class="right_sidebar col-xs-3">
 			<div class="notifications">
 				<p><a href=""><span class="user_name">Sherlock Holmes</span></a> commented on Jim Moriarty's post.</p>
 				<p><a href=""><span class="user_name">Mrs. Hudson</span></a> posted on Yorkshire Cricket's site.</p>

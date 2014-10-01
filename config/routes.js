@@ -1,8 +1,3 @@
-// var mongoose = require('mongoose'),
-// 	fs = require('fs'),
-	// User = mongoose.model('User'),
-	// users = require('./../server/controllers/users.js');
-
 var users = require('./../server/controllers/users.js');
 
 module.exports = function Route(app) {

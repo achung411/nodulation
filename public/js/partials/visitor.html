@@ -1,6 +1,6 @@
 <div class="container" ng-controller="visiteeController">
 
-	<div class="col-sm-12 splash">
+	<div class="col-xs-12 splash">
 		<div class="frame1">
 			<img ng-src="{{ visitee.cover }}" alt="">
 		</div>
@@ -13,14 +13,14 @@
 				<ul>
 					<li ng-hide="friendly" ng-click="addFriend(visitee._id)"><a href="">Add Friend</a></li>
 					<li ng-show="friendly" ng-click="dropFriend(visitee._id)"><i class="fa fa-check"></i><a href="">Friend</a></li>
-					<li><a href="">Message</a></li>
-					<li><a href="">Friends List</a></li>
+					<li ng-click="ping()"><a href="">Message</a></li>
+					<li ng-click="showFriends()"><a href="">Friends List</a></li>
 				</ul>
 			</div>
 		</div>
 	</div>
 
-	<div class="sidebar col-sm-3">
+	<div class="sidebar col-xs-3">
 		<p class="italics" ng-bind="visitee.status"></p>
 		<h3>About</h3>
 		<p><span class="category">Name: </span><span ng-bind="visitee.first_name + ' ' + visitee.last_name"></span></p>
@@ -34,7 +34,7 @@
 			<li><a href="">The Baker St. Regulars</a></li>
 		</ul>
 	</div>
-	<div class="newsfeed col-sm-7">
+	<div class="newsfeed col-xs-7">
 		<div class="well">
 			<p class="user_name"><a href="">John Watson</a></p>
 			<p>OMG OMG OMG.  Dr. Who is baaaack!!!! I'm soooo excited.  It seems like I've been waiting forever.</p>

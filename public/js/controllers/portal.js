@@ -1,8 +1,8 @@
-portal.controller('portalController', function ($scope, socket){
+portal.controller('portalController', function ($scope, socket, conduit){
 
-	$scope.$on('$destroy', function (event) {
-		socket.removeAllListeners();
-	});
+	// $scope.$on('$destroy', function (event) {
+	// 	socket.removeAllListeners();
+	// });
 
 	$scope.writeStatus = function (newStatus) {
 		socket.emit("/statuses/create", newStatus);
