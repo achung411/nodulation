@@ -122,23 +122,43 @@ header {
 			left: -40px;
 		}
 
-	.status {
+	.newsfeed .post, .newsfeed .status {
 		padding: 10px;
 	}
 
-		.status p {
+		.newsfeed .post p, .newsfeed .status p {
 			font-weight: bold;
-			/*background-color: #CCE9EF;*/
-			display: inline;
 		}
 
-		.status form {
+		.newsfeed .post a {
+			padding: 4px 5px;
+		}
+
+		.newsfeed .post form, .newsfeed .status form {
 			margin: 0 10px;
 		}
 
-		.status textarea {
+		.newsfeed .post textarea, .newsfeed .status textarea {
 			margin: 0 0 10px 0;
 		}
+
+	.newsfeed .post {
+		height: 150px;
+	}
+
+		.newsfeed .post p, .newsfeed .status p, .newsfeed .post input {
+			display: inline;
+		}
+
+		.newsfeed .post .selected {
+			border-top-left-radius: 5px;
+			border-top-right-radius: 5px;
+			background-color: silver;
+		}
+
+	.newsfeed .status {
+		height: 130px;
+	}
 
 		.well li {
 			display: inline;
@@ -149,8 +169,13 @@ header {
 			width: 70%;
 		}
 
-/*		.well button {
-		}*/
+		.well .topper {
+			margin: 0 0 10px 0;
+		}
+
+			.well .topper img {
+				display: inline;
+			}
 
 		.notifications, .contact_list {
 			height: 250px;
@@ -162,10 +187,11 @@ header {
 			background-color: lightgreen;
 		}
 
-			.notifications img, .contact_list img {
+			.notifications img, .contact_list img, .thumbnail {
 				height: 30px;
 				width: 30px;
 				margin: 0 5px;
+				padding: 0;
 			}
 
 .user_name, .category {
@@ -235,20 +261,16 @@ header {
 			border: 1px silver solid;
 			list-style-type: none;
 			padding: 5px;
-			/*width: 235px;*/
 		}
 
 			.nav li {
 				display: inline;
 				padding: 5px;
 				border-right: 1px silver solid;
-				/*border-left: 1px silver solid;*/
 			}
 
 			.nav li:last-child {
 				border-right: none;
-/*				border-right: 1px silver solid;
-				border-left: 1px silver solid;*/
 			}
 
 .css-form input.ng-invalid.ng-dirty {

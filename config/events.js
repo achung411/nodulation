@@ -1,5 +1,7 @@
-var mongoose = require('mongoose'),
-	User = mongoose.model('User');
+var mongoose = require('mongoose')
+  ,	User = mongoose.model('User')
+  ,	Post = mongoose.model('Post')
+  ,	Comment = mongoose.model('Comment');
 
 module.exports = function Event(app) {
 
@@ -7,10 +9,22 @@ module.exports = function Event(app) {
 		return array.indexOf(value) > -1;
 	};
 
-	app.io.route('/users/create', function(req) {
+	function getAllPosts (wall_id, req) {
+		Post.find({wall_id: wall_id}, function (err, results) {
+			if (err) {
+				handleError(err);
+			}
+			else {
+				console.log("We got a hit! ", results);
+				req.io.emit("/posts/index", results);
+			}
+		});
+	};
+
+	app.io.route('/users/create', function (req) {
 		var new_user = req.data;
 		var email_address = req.data.email;
-		User.find({email: email_address}, function(err, results) {
+		User.find({email: email_address}, function (err, results) {
 			if (results.length > 0) {
 				req.io.emit('registration_error', {reg_error: "There is already an account with that email."});
 			}
@@ -27,10 +41,10 @@ module.exports = function Event(app) {
 			}
 		});
 	});
-	app.io.route('/sessions/create', function(req) {
+	app.io.route('/sessions/create', function (req) {
 	    var mail = req.data.email;
 	    var pwd = req.data.password;
-	    User.find({email: mail, password: pwd}, function(err, results) {
+	    User.find({email: mail, password: pwd}, function (err, results) {
 	        if (results.length == 0) {
 	            req.io.emit('error', {error_msg: "There is no user registered with that email and password."});
 	        }
@@ -44,7 +58,7 @@ module.exports = function Event(app) {
 	        };
 	    });
 	});
-app.io.route("initialize_connection", function(req) {
+	app.io.route("initialize_connection", function (req) {
 		if (typeof req.session.current_user == "undefined") {
 			req.io.emit("reset");
 		}
@@ -72,6 +86,7 @@ app.io.route("initialize_connection", function(req) {
 						}
 						else {
 							req.io.emit("initializing", {my_record: my_record, other_users: result});
+							getAllPosts(current_id, req);
 							var my_friends = my_record.friends;
 							var numfriends = my_record.friends.length;
 							for (var i=0; i < numfriends; i++) {
@@ -94,7 +109,7 @@ app.io.route("initialize_connection", function(req) {
 			});
 		}
 	});
-	app.io.route("initialize_visit", function(req) {
+	app.io.route("initialize_visit", function (req) {
 		if (typeof req.session.current_user == "undefined") {
 			req.io.emit("reset");
 		}
@@ -111,7 +126,33 @@ app.io.route("initialize_connection", function(req) {
 				});
 			});
 		}
-	});	
+	});
+	app.io.route("retrieve_author", function (req) {
+		console.log("looking for author: ", req.data);
+		
+		User
+		.findOne({_id: req.data})
+		.select("first_name last_name pic")
+		.exec(function (err, result) {
+			if (err) {
+				return handleError(err);
+			}
+			else {
+				req.io.emit("retrieved_author", result);
+				console.log("posters info: ", result);
+			}
+		});
+	});
+
+								// User
+								// .find({_id: my_friends[i]})
+								// .select("first_name last_name pic")
+								// .exec(function (err, returned_info) {
+
+
+
+
+
 	app.io.route("/users/edit", function (req, res) {
 		var newInfo = req.data;
 		User.findOne({_id: req.session.current_user._id }, 
@@ -136,7 +177,7 @@ app.io.route("initialize_connection", function(req) {
 				}
 		});
 	});
-	app.io.route("/statuses/create", function(req) {
+	app.io.route("/statuses/create", function (req) {
 		User.findOne({_id: req.session.current_user._id}, function(err, result) {
 			if (err) {
 				return handleError(err);
@@ -262,8 +303,18 @@ app.io.route("initialize_connection", function(req) {
 			}
 		});
 	});
-	app.io.route("PING", function(req, res) {
-		console.log("Caught the ping!");
-		req.io.emit("PONG");
-	})
-}
+	app.io.route("/posts/create", function (req, res) {
+		console.log("Let's create a post!", req.data);
+		var new_post = req.data;
+		var a = new Post(new_post);
+
+		a.save(function (err, a) {
+			if (err) {
+				return handleError(err);
+			}
+			else {
+				req.io.emit("post_created", a);
+			}
+		});
+	});
+};

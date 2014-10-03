@@ -1,6 +1,7 @@
 portal.controller('visiteeController', function ($scope, socket, $routeParams){
 
 	$scope.friendly = false;
+	$scope.picPoster = false;
 
 	var visitee_id = $routeParams.userid;
 	socket.emit("initialize_visit", visitee_id);
@@ -39,6 +40,16 @@ portal.controller('visiteeController', function ($scope, socket, $routeParams){
  	socket.on("unfriended", function() {
  		$scope.friendly = false;
  	});
+
+ 	$scope.chooseText = function() {
+ 		console.log("I choose you, text!");
+ 		$scope.picPoster = false;
+ 	};
+
+ 	$scope.choosePic = function() {
+ 		console.log("I choose you, picture!");
+ 		$scope.picPoster = true;
+ 	};
 
  	$scope.ping = function () {
  		console.log("pinging away!");

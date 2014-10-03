@@ -31,13 +31,4 @@ portal.controller('navController', function ($scope, socket){
  		}
  		$scope.friends_list.splice(target, 1);
  	});
-
- 	$scope.ping = function () {
- 		console.log("pinging away!");
- 		socket.emit("PING");
- 	};
-
-	 socket.on("PONG", function() {
- 		console.log("We all love PONG in the navbar");
- 	});
 });

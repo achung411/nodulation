@@ -1,6 +1,6 @@
-var mongoose = require('mongoose'),
-    fs = require('fs'),
-    User = mongoose.model('User');
+var mongoose = require('mongoose')
+  , fs = require('fs')
+  , User = mongoose.model('User');
 
 module.exports = {
   intro: function (req, res) {

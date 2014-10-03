@@ -42,6 +42,8 @@
 				</tr>
 			</tbody>
 		</table>
+
+<!-- -------------- mockup -------------- -->			
 		<h5>Events</h5>
 		<h5>GROUPS</h5>
 		<ul>
@@ -49,17 +51,49 @@
 			<li><a href="">St. Barts alumni</a></li>
 			<li><a href="">The Baker St. Regulars</a></li>
 		</ul>
+<!-- ============== end mockup ============== -->		
+
 	</div>
 	<div class="newsfeed col-xs-7">
 		<div class="well status">
-			<i class="fa fa-pencil-square-o"></i>
-			<p>Update Status</p>
 			<form name="statusForm">
-				<textarea class="form-control" rows="3" ng-model="new_status">What's on your mind?</textarea>
-				<button class="btn-primary" ng-click="writeStatus(new_status)">Post Status</button>
+				<i class="fa fa-pencil"></i>
+				<p>Update Status</p>
+				<textarea class="form-control" rows="2" placeholder="What's on your mind?" ng-model="new_status"></textarea>
+				<button class="btn-primary pull-right" ng-click="writeStatus(new_status)">Post Status</button>
 			</form>
 		</div>
 
+		<div class="well post">
+
+			<form ng-hide="picPoster" role="form">
+				<a href="" class="selected" ng-click="chooseText()">
+					<i class="fa fa-pencil-square-o"></i><p>Post</p>
+				</a>
+				<a href="" ng-click="choosePic()">
+					<i class="fa fa-picture-o"></i><p>Picture</p>
+				</a>
+				<textarea class="form-control" rows="3" ng-model="new_post" placeholder="Write something..."></textarea>
+				<button class="btn-primary pull-right" ng-click="writePost(new_post)">Post</button>
+				<p class="green" ng-bind="confirmation_msg"></p>
+			</form>
+
+			<form action="/picpost/create" method="post" class="form-horizontal" enctype="multipart/form-data" role="form" ng-show="picPoster">
+				<a href="" ng-click="chooseText()">
+					<i class="fa fa-pencil-square-o"></i><p>Post</p>
+				</a>
+				<a href="" class="selected" ng-click="choosePic()">
+					<i class="fa fa-picture-o"></i><p>Picture</p>
+				</a>
+				<textarea class="form-control" rows="3" name="new_post_pic.content" placeholder="Say something about this..."></textarea>
+				<label for="pic_input">Select Picture:</label>
+				<input type="file" name="new_post_pic.picture" id="pic_input">
+				<button type="submit" class="btn-primary pull-right">Post</button>
+			</form>
+		</div>
+
+
+<!-- -------------- mockup -------------- -->	
 		<div class="well">
 			<p class="user_name"><a href="">John Watson</a></p>
 			<p>OMG OMG OMG.  Dr. Who is baaaack!!!! I'm soooo excited.  It seems like I've been waiting forever.</p>
@@ -99,5 +133,6 @@
 				<button type="submit" class="btn-primary">Comment</button>
 			</form>
 		</div>
+<!-- ============== end mockup ============== -->			
 	</div>
 </div>
