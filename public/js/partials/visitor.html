@@ -68,6 +68,20 @@
 			</form>
 		</div>
 
+		<div class="well" ng-repeat="entry in yourPosts | orderBy: 'created_at' : 'reverse'">
+			<div ng-repeat="author in posters">
+				<div ng-if="entry.author_id == author._id">
+					<div class="topper">
+						<a ng-href="#/profile/{{author._id}}">
+							<img class="thumbnail" ng-src={{author.pic}} alt="">
+							<span class="user_name" ng-bind="author.first_name + ' ' + author.last_name"></span>
+						</a>
+					</div>
+					<p ng-bind="entry.content"></p>
+				</div>
+			</div>
+		</div>
+
 
 <!-- -------------- mockup -------------- -->	
 		<div class="well">

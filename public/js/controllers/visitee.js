@@ -1,10 +1,15 @@
-portal.controller('visiteeController', function ($scope, socket, $routeParams){
+portal.controller('visiteeController', function ($scope, socket, $routeParams, conduit){
 
 	$scope.friendly = false;
 	$scope.picPoster = false;
+	$scope.yourPosts = [];
+	$scope.posters = [];
 
 	var visitee_id = $routeParams.userid;
+
 	socket.emit("initialize_visit", visitee_id);
+
+	// socket.emit("getYourPosts"); // right now, included on initialize call
 
 	// $scope.$on('$destroy', function (event) {
 	// 	socket.removeAllListeners();
@@ -19,6 +24,25 @@ portal.controller('visiteeController', function ($scope, socket, $routeParams){
 				$scope.friendly = true;
 			}
 		};
+	});
+
+	socket.on("/posts/index", function (req) {
+		$scope.yourPosts = req;
+		for (var i=0; i<req.length; i++) {
+			socket.emit("retrieve_author", req[i].author_id);
+		};
+	});
+
+	socket.on("retrieved_author", function (req) {
+		var unique = true;
+		for (var i=0; i<$scope.posters.length; i++) {
+			if (req._id == $scope.posters[i]._id) {
+				unique = false;
+			};
+		};
+		if (unique) {
+			$scope.posters.push(req);
+		}
 	});
 
 	$scope.addFriend = function (target_id) {
@@ -51,12 +75,11 @@ portal.controller('visiteeController', function ($scope, socket, $routeParams){
  		$scope.picPoster = true;
  	};
 
- 	$scope.ping = function () {
- 		console.log("pinging away!");
- 		socket.emit("PING");
+	$scope.writePost = function(details) {
+ 		socket.emit("/posts/create", {author_id: $scope.me._id, wall_id: visitee_id, content: details});
  	};
 
- 	socket.on("PONG", function() {
- 		console.log("We all love PONG here in the visitor page!");
+ 	socket.on("post_created", function (req) {
+ 		$scope.yourPosts.push(req);
  	});
 });

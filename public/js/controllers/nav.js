@@ -1,4 +1,4 @@
-portal.controller('navController', function ($scope, socket){
+portal.controller('navController', function ($scope, socket, conduit){
 
 	$scope.friends_list = [];
 

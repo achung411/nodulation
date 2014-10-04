@@ -1,4 +1,4 @@
-portal.controller('welcomeController', function($scope, socket){    	
+portal.controller('welcomeController', function($scope, socket, conduit){    	
 
 	socket.on('error', function (data) {
 		console.log ('incoming errors: ', data.error_msg);
@@ -16,6 +16,7 @@ portal.controller('welcomeController', function($scope, socket){
 	});
 
 	$scope.login = function (user) {
+		console.log("logging you in: ", user);
 		socket.emit('/sessions/create', user);
 	};
 
@@ -23,12 +24,14 @@ portal.controller('welcomeController', function($scope, socket){
 		socket.emit('/users/create', user);
 	};
 
-    // socket.on('user_authenticated', function(data) {
-    socket.on('user_authenticated', function() {
-		window.location.href = "/index";	    	
+    socket.on('user_authenticated', function(me) {
+    	console.log("I am now ", me);
+    	conduit.set_identity(me, function() {
+			window.location.href = "/index";	    	
+    	});
     });
 
-	$scope.$on('$destroy', function (event) {
-		socket.removeAllListeners();
-	});
+	// $scope.$on('$destroy', function (event) {
+	// 	socket.removeAllListeners();
+	// });
 });

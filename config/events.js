@@ -4,6 +4,7 @@ var mongoose = require('mongoose')
   ,	Comment = mongoose.model('Comment');
 
 module.exports = function Event(app) {
+	var current_user;
 
 	function isInArray (value, array) {
 		return array.indexOf(value) > -1;
@@ -53,7 +54,8 @@ module.exports = function Event(app) {
 	            req.session.current_user = found_user;
 	            req.session.sessionID = req.sessionID;
 	            req.session.save(function() {
-	                req.io.emit('user_authenticated');
+	            	current_user = found_user;
+	                req.io.emit('user_authenticated', found_user);
 	            });
 	        };
 	    });
@@ -86,7 +88,7 @@ module.exports = function Event(app) {
 						}
 						else {
 							req.io.emit("initializing", {my_record: my_record, other_users: result});
-							getAllPosts(current_id, req);
+							// getAllPosts(current_id, req);
 							var my_friends = my_record.friends;
 							var numfriends = my_record.friends.length;
 							for (var i=0; i < numfriends; i++) {
@@ -122,10 +124,14 @@ module.exports = function Event(app) {
 				User.find({_id: visitee_id}, function (err, results) {	// gets visitor settings
 					if (err) return handleError(err);
 					var visitee_record = results[0];
+					getAllPosts(visitee_id, req);	//////// or should i do separately?
 					req.io.emit("visit_approved", {my_record: my_record, visitee_record: visitee_record});
 				});
 			});
 		}
+	});
+	app.io.route("getMyPosts", function (req) {
+		getAllPosts(current_user._id, req);
 	});
 	app.io.route("retrieve_author", function (req) {
 		console.log("looking for author: ", req.data);
@@ -143,16 +149,6 @@ module.exports = function Event(app) {
 			}
 		});
 	});
-
-								// User
-								// .find({_id: my_friends[i]})
-								// .select("first_name last_name pic")
-								// .exec(function (err, returned_info) {
-
-
-
-
-
 	app.io.route("/users/edit", function (req, res) {
 		var newInfo = req.data;
 		User.findOne({_id: req.session.current_user._id }, 
@@ -304,7 +300,6 @@ module.exports = function Event(app) {
 		});
 	});
 	app.io.route("/posts/create", function (req, res) {
-		console.log("Let's create a post!", req.data);
 		var new_post = req.data;
 		var a = new Post(new_post);
 

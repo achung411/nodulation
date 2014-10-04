@@ -54,7 +54,7 @@
 			</form>
 		</div>
 
-		<div class="well" ng-repeat="entry in allPosts">
+		<div class="well" ng-repeat="entry in allPosts | orderBy: 'created_at' : 'reverse'">
 			<div ng-repeat="author in posters">
 				<div ng-if="entry.author_id == author._id">
 					<div class="topper">

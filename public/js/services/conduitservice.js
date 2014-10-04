@@ -1,19 +1,27 @@
-portal.service('conduit', function() {
+portal.factory('conduit', function() {
 	
 	// var friends = ["Tupac Shakur", "Biggie Smalls", "Sean Puffy Combs", "Jay-Z", "Nas"];
-	var identity = [];
+	var identity = {};
 	var friends = [];
 	var channel = {};
 	
-	channel.set_identity = function(ego) {
+	channel.set_identity = function (ego, callback) {
+		console.log("requesting we save user: ", ego);
 		identity = ego;
-		console.log("I am...", identity);
+		console.log("we have saved the user: ", identity);
+		callback();
+		// console.log("My identity is now: ", identity);
+		// callback();
 	};
 
-	channel.get_identity = function() {
-		console.log("I will always be... ", identity);
+	channel.get_identity = function (callback) {
+		// $http.get('/friends.json').success(function(output)
+		console.log("I think i am ", identity);
+		// callback(identity);
+		callback();
 		return identity;
 	};
+	
 
 	channel.getFriends = function() {
 		return friends;
