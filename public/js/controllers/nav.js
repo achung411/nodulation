@@ -1,16 +1,21 @@
 portal.controller('navController', function ($scope, socket, conduit){
 
+	// $scope.$on('$destroy', function (event) {
+	// 	socket.removeAllListeners();
+	// });
+
 	$scope.friends_list = [];
 
-	socket.emit("initialize_connection");
+	socket.emit("initialize_nav");
 
 	socket.on("reset", function() {
 		window.location.href = "/";
 	});
 
-	socket.on("initializing", function (req) {
+	socket.on("initializing_nav", function (req) {
 		$scope.me = req.my_record;
 		$scope.everyone_else = req.other_users;
+		console.log("Who am I? :", $scope.me);
 	});
 
 	socket.on("friend_packet", function (req) {

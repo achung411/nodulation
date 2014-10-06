@@ -9,15 +9,26 @@ module.exports = function Event(app) {
 	function isInArray (value, array) {
 		return array.indexOf(value) > -1;
 	};
-
 	function getAllPosts (wall_id, req) {
 		Post.find({wall_id: wall_id}, function (err, results) {
 			if (err) {
-				handleError(err);
+				return handleError(err);
 			}
 			else {
-				console.log("We got a hit! ", results);
 				req.io.emit("/posts/index", results);
+			}
+		});
+	};
+	function createNewPost (wall_id, req) {
+		var new_post = req.data;
+		var a = new Post(new_post);
+
+		a.save(function (err, a) {
+			if (err) {
+				return handleError(err);
+			}
+			else {
+				getAllPosts(wall_id, req);
 			}
 		});
 	};
@@ -60,7 +71,7 @@ module.exports = function Event(app) {
 	        };
 	    });
 	});
-	app.io.route("initialize_connection", function (req) {
+	app.io.route("initialize_nav", function (req) {
 		if (typeof req.session.current_user == "undefined") {
 			req.io.emit("reset");
 		}
@@ -87,8 +98,7 @@ module.exports = function Event(app) {
 							return handleError(err);
 						}
 						else {
-							req.io.emit("initializing", {my_record: my_record, other_users: result});
-							// getAllPosts(current_id, req);
+							req.io.emit("initializing_nav", {my_record: my_record, other_users: result});
 							var my_friends = my_record.friends;
 							var numfriends = my_record.friends.length;
 							for (var i=0; i < numfriends; i++) {
@@ -121,11 +131,16 @@ module.exports = function Event(app) {
 
 			User.find({_id: current_id}, function (err, results) {
 				var my_record = results[0];								// refreshes user settings
+				
 				User.find({_id: visitee_id}, function (err, results) {	// gets visitor settings
-					if (err) return handleError(err);
-					var visitee_record = results[0];
-					getAllPosts(visitee_id, req);	//////// or should i do separately?
-					req.io.emit("visit_approved", {my_record: my_record, visitee_record: visitee_record});
+					if (err) {
+						return handleError(err);
+					}
+					else {
+						var visitee_record = results[0];
+						getAllPosts(visitee_id, req);
+						req.io.emit("visit_approved", {my_record: my_record, visitee_record: visitee_record});
+					}
 				});
 			});
 		}
@@ -133,9 +148,11 @@ module.exports = function Event(app) {
 	app.io.route("getMyPosts", function (req) {
 		getAllPosts(current_user._id, req);
 	});
+	app.io.route("getYourPosts", function (req) {
+		getAllPosts(req.data.target_id, req);
+	});
 	app.io.route("retrieve_author", function (req) {
-		console.log("looking for author: ", req.data);
-		
+
 		User
 		.findOne({_id: req.data})
 		.select("first_name last_name pic")
@@ -145,7 +162,6 @@ module.exports = function Event(app) {
 			}
 			else {
 				req.io.emit("retrieved_author", result);
-				console.log("posters info: ", result);
 			}
 		});
 	});
@@ -299,17 +315,10 @@ module.exports = function Event(app) {
 			}
 		});
 	});
-	app.io.route("/posts/create", function (req, res) {
-		var new_post = req.data;
-		var a = new Post(new_post);
-
-		a.save(function (err, a) {
-			if (err) {
-				return handleError(err);
-			}
-			else {
-				req.io.emit("post_created", a);
-			}
-		});
+	app.io.route("/posts/create/me", function (req, res) {
+		createNewPost(current_user._id, req);
+	});
+	app.io.route("/posts/create/you", function (req, res) {
+		createNewPost(req.data.wall_id, req);
 	});
 };

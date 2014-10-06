@@ -15,7 +15,13 @@ app.configure(function(){
     limit: 4000000,
     keepExtensions: true})); //to allow handling of POST data
  app.use(express.cookieParser()); //to allow session handling
- app.use(express.session({secret: 'monkey'})); //for using sessions
+ app.use(express.session({
+ 	secret: 'monkey',
+ 	key: 'whynode',
+ 	cookie: {
+ 		maxAge: 31*24*60*60*1000 // 31 days, in ms
+ 	}
+ })); //for using sessions
  app.use(express.methodOverride());
  app.use(app.router);
  app.use(express.static(path.join(__dirname, 'public')));

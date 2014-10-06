@@ -9,8 +9,6 @@ portal.controller('visiteeController', function ($scope, socket, $routeParams, c
 
 	socket.emit("initialize_visit", visitee_id);
 
-	// socket.emit("getYourPosts"); // right now, included on initialize call
-
 	// $scope.$on('$destroy', function (event) {
 	// 	socket.removeAllListeners();
 	// });
@@ -66,20 +64,30 @@ portal.controller('visiteeController', function ($scope, socket, $routeParams, c
  	});
 
  	$scope.chooseText = function() {
- 		console.log("I choose you, text!");
  		$scope.picPoster = false;
  	};
 
  	$scope.choosePic = function() {
- 		console.log("I choose you, picture!");
  		$scope.picPoster = true;
  	};
 
-	$scope.writePost = function(details) {
- 		socket.emit("/posts/create", {author_id: $scope.me._id, wall_id: visitee_id, content: details});
+	$scope.writeYourPost = function(new_post) {
+		var details = new_post;
+		$scope.new_post = "";
+		$scope.postForm.$setPristine();
+ 		socket.emit("/posts/create/you", {author_id: $scope.me._id, wall_id: visitee_id, content: details});
  	};
 
- 	socket.on("post_created", function (req) {
- 		$scope.yourPosts.push(req);
- 	});
+ 	// socket.on("post_created", function (req) {
+ 	// 	var unique = true;
+ 	// 	for (var i=0; i<$scope.yourPosts.length; i++) {
+ 	// 		if (req.author_id == $scope.yourPosts.author_id) {
+ 	// 			unique = false;
+ 	// 		}
+ 	// 	};
+ 	// 	if (unique) {
+ 	// 		// $scope.yourPosts.push(req);
+ 	// 		socket.emit("getYourPosts", {target_id: visitee_id});
+ 	// 	};
+ 	// });
 });

@@ -28,7 +28,7 @@
 
 		<div class="well post">
 
-			<form ng-hide="picPoster" role="form">
+			<form ng-hide="picPoster" role="form" name="postForm">
 				<a href="" class="selected" ng-click="chooseText()">
 					<i class="fa fa-pencil-square-o"></i><p>Post</p>
 				</a>
@@ -36,7 +36,7 @@
 					<i class="fa fa-picture-o"></i><p>Picture</p>
 				</a>
 				<textarea class="form-control" rows="3" ng-model="new_post" placeholder="Write something..."></textarea>
-				<button class="btn-primary pull-right" ng-click="writePost(new_post)">Post</button>
+				<button class="btn-primary pull-right" ng-click="writeMyPost(new_post)">Post</button>
 				<p class="green" ng-bind="confirmation_msg"></p>
 			</form>
 
