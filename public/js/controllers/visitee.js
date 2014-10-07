@@ -75,19 +75,6 @@ portal.controller('visiteeController', function ($scope, socket, $routeParams, c
 		var details = new_post;
 		$scope.new_post = "";
 		$scope.postForm.$setPristine();
- 		socket.emit("/posts/create/you", {author_id: $scope.me._id, wall_id: visitee_id, content: details});
+ 		socket.emit("/posts/create", {author_id: $scope.me._id, wall_id: visitee_id, content: details});
  	};
-
- 	// socket.on("post_created", function (req) {
- 	// 	var unique = true;
- 	// 	for (var i=0; i<$scope.yourPosts.length; i++) {
- 	// 		if (req.author_id == $scope.yourPosts.author_id) {
- 	// 			unique = false;
- 	// 		}
- 	// 	};
- 	// 	if (unique) {
- 	// 		// $scope.yourPosts.push(req);
- 	// 		socket.emit("getYourPosts", {target_id: visitee_id});
- 	// 	};
- 	// });
 });

@@ -52,24 +52,8 @@ portal.controller('portalController', function ($scope, socket, conduit){
  		var details = new_post;
  		$scope.new_post = "";
  		$scope.postForm.$setPristine();
- 		socket.emit("/posts/create/me", {author_id: $scope.me._id, wall_id: $scope.me._id, content: details});
+ 		socket.emit("/posts/create", {author_id: $scope.me._id, wall_id: $scope.me._id, content: details});
  	};
-
- 	// socket.on("post_created", function (req) {
- 	// 	console.log("Our current posts: ", $scope.allPosts);
- 	// 	console.log("Our new incoming post: ", req);
- 	// 	var unique = true;
- 	// 	for (var i=0; i<$scope.allPosts.length; i++) {
- 	// 		if (req.author_id == $scope.allPosts.author_id) {
- 	// 			unique = false;
- 	// 		}
- 	// 	};
- 	// 	if (unique) {
- 	// 		// $scope.allPosts.push(req);
- 	// 		socket.emit("getMyPosts");
- 	// 	}
-		// // socket.emit("retrieve_author", req.author_id); 		
- 	// });
 
 	$scope.editUser = function (user) {
 		socket.emit("/users/edit", user);

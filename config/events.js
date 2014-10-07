@@ -1,4 +1,5 @@
 var mongoose = require('mongoose')
+  , fs = require('fs')
   ,	User = mongoose.model('User')
   ,	Post = mongoose.model('Post')
   ,	Comment = mongoose.model('Comment');
@@ -10,7 +11,11 @@ module.exports = function Event(app) {
 		return array.indexOf(value) > -1;
 	};
 	function getAllPosts (wall_id, req) {
-		Post.find({wall_id: wall_id}, function (err, results) {
+		Post
+		.find({wall_id: wall_id})
+		.limit(10)
+		.sort('-created_at')
+		.exec(function (err, results) {
 			if (err) {
 				return handleError(err);
 			}
@@ -131,7 +136,7 @@ module.exports = function Event(app) {
 
 			User.find({_id: current_id}, function (err, results) {
 				var my_record = results[0];								// refreshes user settings
-				
+
 				User.find({_id: visitee_id}, function (err, results) {	// gets visitor settings
 					if (err) {
 						return handleError(err);
@@ -315,10 +320,63 @@ module.exports = function Event(app) {
 			}
 		});
 	});
-	app.io.route("/posts/create/me", function (req, res) {
-		createNewPost(current_user._id, req);
-	});
-	app.io.route("/posts/create/you", function (req, res) {
+// create_picture: function (req, res) {
+ //    var tmp_path = req.files.picture.path;
+ //    var target_path = './public/images/pics/' + req.files.picture.name;
+ //    fs.rename(tmp_path, target_path, function(err) {
+ //      if (err) throw err;
+ //      fs.unlink(tmp_path, function() {
+ //        if (err) {
+ //          throw err;
+ //        }
+ //        else {
+ //          User.findOne({_id: req.session.current_user._id }, 
+ //            function(err, result) {
+ //              if (err) {
+ //                return handleError(err);
+ //              }
+ //              else {
+ //                result.pic = '/images/pics/' + req.files.picture.name;
+ //                result.updated_at = new Date();
+ //                result.save(function(err) {
+ //                  if (err) {
+ //                    return handleError(err);
+ //                  }
+ //                  else {
+ //                    return res.redirect('/index');
+ //                  }
+ //                });
+ //              }
+ //            }
+ //          );
+ //        }
+ //      })
+ //    });
+ //  },
+
+	// app.post('/picpost/create', function (req, res) {
+	// 	console.log("here's my picpost comment! ", req.body.new_post_content);
+	// 	console.log("this post is going to be put onto wall: ", req.body.wall_id);
+	// 	var tmp_path = req.files.new_post_pic.path;
+	// 	var target_path = "./public/images/posts/" + req.files.new_post_pic.name;
+	// 	console.log("here's my post info: ", req.body);
+	// 	var post_pic = req.body;
+	// 	fs.rename(tmp_path, target_path, function (err) {
+	// 		if (err) throw err;
+	// 		fs.unlink(tmp_path, function() {
+	// 			if (err) {
+	// 				throw err;
+	// 			}
+	// 			else {
+	// 				post_pic.picture = "/images/posts/" + req.files.new_post_pic.name;
+	// 				req.data = post_pic;
+	// 				createNewPost(post_pic.wall_id, req);
+	// 			}
+	// 		});
+	// 	});
+	// });
+
+	app.io.route("/posts/create", function (req, res) {
 		createNewPost(req.data.wall_id, req);
 	});
 };

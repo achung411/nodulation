@@ -8,6 +8,7 @@ module.exports = function Route(app) {
 	app.get('/index', function (req, res) { users.index(req, res) });
 	app.post('/pictures/create', function (req, res) { users.create_picture(req, res) } );
 	app.post('/covers/create', function (req, res) { users.create_cover(req, res) } );
+	app.post('/picpost/create', function (req, res) { posts.create_picpost(req, res) } );
 	app.get("/signout", function (req, res) { users.signout(req, res) });
 // ------------------- for debugging purposes ---------------
 	app.get('/test_users', function (req, res) { users.test(req, res) });

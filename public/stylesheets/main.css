@@ -86,7 +86,6 @@ header {
 .main_content, .right_sidebar {
 	display: inline-block;
 	vertical-align: top;
-	/*padding: 0;*/
 }
 
 	.main_content a, .right_sidebar a {
@@ -109,12 +108,6 @@ header {
 		/*border: 1px solid yellow;*/
 		/*height: 300px;*/
 	}
-
-/*		.profile {
-			border: 1px solid white;
-			height: 100px;
-			width: 100px;
-		}*/
 
 		.sidebar ul {
 			list-style-type: none;
@@ -169,6 +162,11 @@ header {
 			width: 70%;
 		}
 
+		.well img {
+			max-height: 500px;
+			max-width: 500px;
+		}
+
 		.well .topper {
 			margin: 0 0 10px 0;
 		}
@@ -217,7 +215,8 @@ header {
 }
 
 	.splash .frame1 img{
-		height: 350px;
+		border: 1px dotted yellow;
+		max-height: 350px;
 	}
 
 	.splash .persona {
@@ -260,12 +259,19 @@ header {
 			border-radius: 10px;
 			border: 1px silver solid;
 			list-style-type: none;
-			padding: 5px;
+			height: 30px;
+			width: 280px;
+			padding: 0px;
 		}
 
+			.nav i, .nav li {
+				vertical-align: top;
+			}
+
 			.nav li {
-				display: inline;
-				padding: 5px;
+				display: inline-block;
+				width: 90px;
+				padding: 4px 10px;
 				border-right: 1px silver solid;
 			}
 

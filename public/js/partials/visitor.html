@@ -39,7 +39,6 @@
 <!-- ============== end mockup ============== -->
 
 	<div class="newsfeed col-xs-7">
-
 		<div class="well post">
 
 			<form ng-hide="picPoster" name="postForm" role="form">
@@ -61,9 +60,11 @@
 				<a href="" class="selected" ng-click="choosePic()">
 					<i class="fa fa-picture-o"></i><p>Picture</p>
 				</a>
-				<textarea class="form-control" rows="3" name="new_post_pic.content" placeholder="Say something about this..."></textarea>
+				<input type="hidden" name="wall_id" ng-value="visitee._id">
+				<input type="hidden" name="author_id" ng-value="me._id">
+				<textarea class="form-control" rows="3" name="content" placeholder="Say something about this..."></textarea>
 				<label for="pic_input">Select Picture:</label>
-				<input type="file" name="new_post_pic.picture" id="pic_input">
+				<input type="file" name="new_post_pic" id="pic_input">
 				<button type="submit" class="btn-primary pull-right">Post</button>
 			</form>
 		</div>
@@ -78,52 +79,9 @@
 						</a>
 					</div>
 					<p ng-bind="entry.content"></p>
+					<img ng-src="{{entry.pic}}" alt="">
 				</div>
 			</div>
 		</div>
-
-
-<!-- -------------- mockup -------------- -->	
-		<div class="well">
-			<p class="user_name"><a href="">John Watson</a></p>
-			<p>OMG OMG OMG.  Dr. Who is baaaack!!!! I'm soooo excited.  It seems like I've been waiting forever.</p>
-			<ul>
-				<li><a href="">Like</a></li>
-				<li><a href="">Comment</a></li>
-				<li><a href="">Share</a></li>
-			</ul>
-			<div class="well">
-				<p class="user_name"><a href="">Jim Moriarty</a></p>
-				<p>He's not the only one...</p>
-				<ul>
-					<li><a href="">Like</a></li>
-					<li><a href="">Comment</a></li>
-					<li><a href="">Share</a></li>
-				</ul>
-				<form role="form">
-					<input type="text" name="comment" placeholder="Write a comment...">
-					<button type="submit" class="btn-primary">Comment</button>
-				</form>
-			</div>
-			<form role="form">
-				<input type="text" name="comment" placeholder="Write a comment...">
-				<button type="submit" class="btn-primary">Comment</button>
-			</form>
-		</div>
-		<div class="well">
-			<p class="user_name"><a href="">Irene Adler</a></p>
-			<p>I'm not dead.  Let's have dinner</p>
-			<ul>
-				<li><a href="">Like</a></li>
-				<li><a href="">Comment</a></li>
-				<li><a href="">Share</a></li>
-			</ul>
-			<form role="form">
-				<input type="text" name="comment" placeholder="Write a comment...">
-				<button type="submit" class="btn-primary">Comment</button>
-			</form>
-		</div>
-<!-- ============== end mockup ============== -->
-
 	</div>
 </div>
