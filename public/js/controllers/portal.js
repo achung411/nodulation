@@ -6,6 +6,7 @@ portal.controller('portalController', function ($scope, socket, conduit){
 
 	$scope.picPoster = false;
 	$scope.allPosts = [];
+	$scope.allComments = [];
 	$scope.posters = [];
 
 	socket.emit("getMyPosts");
@@ -14,6 +15,7 @@ portal.controller('portalController', function ($scope, socket, conduit){
 		$scope.allPosts = req;
 		for (var i=0; i<req.length; i++) {
 			socket.emit("retrieve_author", req[i].author_id);
+			socket.emit("retrieve_comment", req[i]._id);
 		};
 	});
 
@@ -27,6 +29,18 @@ portal.controller('portalController', function ($scope, socket, conduit){
 		if (unique) {
 			$scope.posters.push(req);
 		}
+	});
+
+	socket.on("retrieved_comment", function (req) {
+		var unique = true;
+		for (var i=0;i<$scope.allComments.length; i++) {
+			if (req._id == $scope.allComments[i]._id) {
+				unique = false;
+			}
+		};
+		if (unique) {
+			$scope.allComments.push(req);
+		};
 	});
 
 	$scope.writeStatus = function (new_status) {
@@ -57,6 +71,10 @@ portal.controller('portalController', function ($scope, socket, conduit){
 
 	$scope.editUser = function (user) {
 		socket.emit("/users/edit", user);
+	};
+
+	$scope.writeComment = function(commentary, post_id) {
+		socket.emit("/comments/create", {post_id: post_id, author_id: $scope.me._id, wall_id: $scope.me._id, content: commentary});
 	};
 
 	socket.on("incoming_error", function (req) {

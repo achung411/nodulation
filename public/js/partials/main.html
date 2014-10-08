@@ -4,20 +4,11 @@
 		<p class="user_name" ng-bind="me.first_name + ' ' + me.last_name"></p>
 		<img ng-src="{{me.pic}}" alt="profile pic">
 		<p class="italics" ng-bind="me.status"></p>
-
-<!-- -------------- mockup -------------- -->
-		<h5>Events</h5>
-		<h5>GROUPS</h5>
-		<ul>
-			<li><a href="">St. Barts classes</a></li>
-			<li><a href="">St. Barts alumni</a></li>
-			<li><a href="">The Baker St. Regulars</a></li>
-		</ul>
 	</div>
-<!-- ============== end mockup ============== -->
 
 	<div class="newsfeed col-xs-7">
 		<div class="well status">
+		<!-- update status form -->
 			<form name="statusForm">
 				<i class="fa fa-pencil"></i>
 				<p>Update Status</p>
@@ -28,6 +19,7 @@
 
 		<div class="well post">
 
+		<!-- make text post form -->
 			<form ng-hide="picPoster" role="form" name="postForm">
 				<a href="" class="selected" ng-click="chooseText()">
 					<i class="fa fa-pencil-square-o"></i><p>Post</p>
@@ -40,6 +32,7 @@
 				<p class="green" ng-bind="confirmation_msg"></p>
 			</form>
 
+		<!-- make picture post form -->
 			<form action="/picpost/create" method="post" class="form-horizontal" enctype="multipart/form-data" role="form" ng-show="picPoster">
 				<a href="" ng-click="chooseText()">
 					<i class="fa fa-pencil-square-o"></i><p>Post</p>
@@ -56,7 +49,8 @@
 			</form>
 		</div>
 
-		<div class="well" ng-repeat="entry in allPosts | orderBy: 'created_at' : 'reverse'">
+		<!-- display all posts -->
+		<div class="well posting" ng-repeat="entry in allPosts | orderBy: 'created_at' : 'reverse'">
 			<div ng-repeat="author in posters">
 				<div ng-if="entry.author_id == author._id">
 					<div class="topper">
@@ -66,56 +60,31 @@
 						</a>
 					</div>
 					<p ng-bind="entry.content"></p>
-					<img ng-src="{{entry.pic}}" alt="">
+					<div ng-if="entry.pic">
+						<img ng-src="{{entry.pic}}" alt="">
+					</div>
+				</div>	
+			</div>
+
+		<!-- comments start here -->
+			<div ng-repeat="comment in allComments">					
+				<div ng-if="entry._id == comment.post_id">
+					<div ng-repeat="writer in posters">
+						<div ng-if="writer._id == comment.author_id" class="commentary">
+							<a ng-href="#/profile/{{writer._id}}">
+								<img class="thumbnail" ng-src="{{writer.pic}}" alt="">
+								<span class="user_name" ng-bind="writer.first_name + ' ' + writer.last_name"></span>
+							</a>
+							<p ng-bind="comment.content"></p>
+						</div>
+					</div>
 				</div>
 			</div>
-		</div>
 
-<!-- -------------- mockup -------------- -->
-		<div class="well">
-			<p class="user_name"><a href="">John Watson</a></p>
-			<p>OMG OMG OMG.  Dr. Who is baaaack!!!! I'm soooo excited.  It seems like I've been waiting forever.</p>
-			<ul>
-				<li><a href="">Like</a></li>
-				<li><a href="">Comment</a></li>
-				<li><a href="">Share</a></li>
-			</ul>
-			<div class="well">
-				<p class="user_name"><a href="">Jim Moriarty</a></p>
-				<p>He's not the only one...</p>
-				<ul>
-					<li><a href="">Like</a></li>
-					<li><a href="">Comment</a></li>
-					<li><a href="">Share</a></li>
-				</ul>
-				<form role="form">
-					<input type="text" name="comment" placeholder="Write a comment...">
-					<button type="submit" class="btn-primary">Comment</button>
-				</form>
-			</div>
-			<form role="form">
-				<input type="text" name="comment" placeholder="Write a comment...">
-				<button type="submit" class="btn-primary">Comment</button>
-			</form>
-		</div>
-		<div class="well">
-			<p class="user_name"><a href="">Irene Adler</a></p>
-			<p>I'm not dead.  Let's have dinner</p>
-			<ul>
-				<li><a href="">Like</a></li>
-				<li><a href="">Comment</a></li>
-				<li><a href="">Share</a></li>
-			</ul>
-			<form role="form">
-				<input type="text" name="comment" placeholder="Write a comment...">
-				<button type="submit" class="btn-primary">Comment</button>
+			<form role="form" name="commentForm">
+				<textarea ng-model="comment_content" rows="2" placeholder="Write a comment..."></textarea>
+				<button class="btn-primary pull-right" ng-click="writeComment(comment_content, entry._id)">Comment</button>
 			</form>
 		</div>
 	</div>
-<!-- ============== end mockup ============== -->
-
-<!-- 	<div class="placeholder col-xs-2">
-		<p>Placeholder column sm-2</p>
-	</div> -->
-
 </div>

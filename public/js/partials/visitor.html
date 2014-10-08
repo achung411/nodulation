@@ -26,21 +26,11 @@
 		<p><span class="category">Name: </span><span ng-bind="visitee.first_name + ' ' + visitee.last_name"></span></p>
 		<p><span class="category">Occupation: </span><span ng-bind="visitee.work"></span></p>
 		<p><span class="category">Hometown: </span><span ng-bind="visitee.hometown"></span></p>
-
-<!-- -------------- mockup -------------- -->		
-		<h5>Events</h5>
-		<h5>GROUPS</h5>
-		<ul>
-			<li><a href="">St. Barts classes</a></li>
-			<li><a href="">St. Barts alumni</a></li>
-			<li><a href="">The Baker St. Regulars</a></li>
-		</ul>
 	</div>
-<!-- ============== end mockup ============== -->
 
 	<div class="newsfeed col-xs-7">
 		<div class="well post">
-
+		<!-- make text post form -->
 			<form ng-hide="picPoster" name="postForm" role="form">
 				<a href="" class="selected" ng-click="chooseText()">
 					<i class="fa fa-pencil-square-o"></i><p>Post</p>
@@ -53,6 +43,7 @@
 				<p class="green" ng-bind="confirmation_msg"></p>
 			</form>
 
+		<!-- make picture post form -->
 			<form action="/picpost/create" method="post" class="form-horizontal" enctype="multipart/form-data" role="form" ng-show="picPoster">
 				<a href="" ng-click="chooseText()">
 					<i class="fa fa-pencil-square-o"></i><p>Post</p>
@@ -69,7 +60,8 @@
 			</form>
 		</div>
 
-		<div class="well" ng-repeat="entry in yourPosts | orderBy: 'created_at' : 'reverse'">
+		<!-- display all posts -->
+		<div class="well posting" ng-repeat="entry in yourPosts | orderBy: 'created_at' : 'reverse'">
 			<div ng-repeat="author in posters">
 				<div ng-if="entry.author_id == author._id">
 					<div class="topper">
@@ -79,8 +71,31 @@
 						</a>
 					</div>
 					<p ng-bind="entry.content"></p>
-					<img ng-src="{{entry.pic}}" alt="">
+					<div ng-if="entry.pic">
+						<img ng-src="{{entry.pic}}" alt="">
+					</div>
 				</div>
+			</div>
+
+		<!-- comments start here -->
+			<div ng-repeat="comment in allComments">					
+					<div ng-if="entry._id == comment.post_id">
+						<div ng-repeat="writer in posters">
+							<div ng-if="writer._id == comment.author_id" class="commentary">
+								<a ng-href="#/profile/{{writer._id}}">
+									<img class="thumbnail" ng-src="{{writer.pic}}" alt="">
+									<span class="user_name" ng-bind="writer.first_name + ' ' + writer.last_name"></span>
+								</a>
+								<p ng-bind="comment.content"></p>
+							</div>
+						</div>
+					</div>
+				</div>
+
+				<form role="form" name="commentForm">
+					<textarea ng-model="comment_content" rows="2" placeholder="Write a comment..."></textarea>
+					<button class="btn-primary pull-right" ng-click="writeComment(comment_content, entry._id)">Comment</button>
+				</form>
 			</div>
 		</div>
 	</div>

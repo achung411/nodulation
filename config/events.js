@@ -24,10 +24,22 @@ module.exports = function Event(app) {
 			}
 		});
 	};
+	function retrieveAuthor (req) {
+ 		User
+		.findOne({_id: req.data})
+		.select("first_name last_name pic")
+		.exec(function (err, result) {
+			if (err) {
+				return handleError(err);
+			}
+			else {
+				req.io.emit("retrieved_author", result);
+			}
+		});
+	};
 	function createNewPost (wall_id, req) {
 		var new_post = req.data;
 		var a = new Post(new_post);
-
 		a.save(function (err, a) {
 			if (err) {
 				return handleError(err);
@@ -36,6 +48,21 @@ module.exports = function Event(app) {
 				getAllPosts(wall_id, req);
 			}
 		});
+	};
+	function createNewComment (post_id, wall_id, req) {
+		var new_comment = req.data;
+		// console.log("Incoming new comment: ", new_comment);
+		var a = new Comment(new_comment);
+		a.save(function (err, a) {
+			if (err) {
+				return handleError(err);
+			}
+			else {
+				console.log("We made a comment!");
+				// getAllComments();
+				getAllPosts(wall_id, req);
+			}
+		})
 	};
 
 	app.io.route('/users/create', function (req) {
@@ -82,7 +109,6 @@ module.exports = function Event(app) {
 		}
 		else {
 			var current_id = req.session.current_user._id;
-
 			User
 			.find({_id: current_id})
 			.select("first_name last_name email hometown work pic cover status friends")
@@ -92,7 +118,6 @@ module.exports = function Event(app) {
 				}
 				else {
 					var my_record = results[0];		// refreshes user settings
-
 					User 							// gets other users in db
 					.find({})
 					.where('_id')
@@ -107,7 +132,6 @@ module.exports = function Event(app) {
 							var my_friends = my_record.friends;
 							var numfriends = my_record.friends.length;
 							for (var i=0; i < numfriends; i++) {
-
 								User
 								.find({_id: my_friends[i]})
 								.select("first_name last_name pic")
@@ -133,10 +157,8 @@ module.exports = function Event(app) {
 		else {
 			var current_id = req.session.current_user._id;
 			var visitee_id = req.data;
-
 			User.find({_id: current_id}, function (err, results) {
 				var my_record = results[0];								// refreshes user settings
-
 				User.find({_id: visitee_id}, function (err, results) {	// gets visitor settings
 					if (err) {
 						return handleError(err);
@@ -157,16 +179,23 @@ module.exports = function Event(app) {
 		getAllPosts(req.data.target_id, req);
 	});
 	app.io.route("retrieve_author", function (req) {
-
-		User
-		.findOne({_id: req.data})
-		.select("first_name last_name pic")
-		.exec(function (err, result) {
+		retrieveAuthor(req);
+	});
+	app.io.route("retrieve_comment", function (req) {
+		Comment
+		.find({post_id: req.data})
+		.select("author_id post_id content")
+		.exec(function (err, results) {
+			var num_comments = results.length;
 			if (err) {
 				return handleError(err);
 			}
-			else {
-				req.io.emit("retrieved_author", result);
+			else if (num_comments > 0) {
+				for (var i=0; i<num_comments; i++) {
+					req.data = results[i].author_id;
+					retrieveAuthor(req);
+					req.io.emit("retrieved_comment", results[i]);
+				}
 			}
 		});
 	});
@@ -217,7 +246,6 @@ module.exports = function Event(app) {
 		var friend_id = req.data;
 		var me = req.session.current_user;
 		var my_id = req.session.current_user._id;
-
 		User.findOne({_id: friend_id}, function (err, result) {		// find friend
 			if (err) {
 				return handleError (err);
@@ -272,7 +300,6 @@ module.exports = function Event(app) {
 		var friend_id = req.data;
 		var my_id = req.session.current_user._id;
 		var friendlist = [];
-
 		User.findOne({_id: friend_id}, function (err, result) {		// find friend
 			if (err) {
 				return handleError(err);
@@ -320,63 +347,10 @@ module.exports = function Event(app) {
 			}
 		});
 	});
-// create_picture: function (req, res) {
- //    var tmp_path = req.files.picture.path;
- //    var target_path = './public/images/pics/' + req.files.picture.name;
- //    fs.rename(tmp_path, target_path, function(err) {
- //      if (err) throw err;
- //      fs.unlink(tmp_path, function() {
- //        if (err) {
- //          throw err;
- //        }
- //        else {
- //          User.findOne({_id: req.session.current_user._id }, 
- //            function(err, result) {
- //              if (err) {
- //                return handleError(err);
- //              }
- //              else {
- //                result.pic = '/images/pics/' + req.files.picture.name;
- //                result.updated_at = new Date();
- //                result.save(function(err) {
- //                  if (err) {
- //                    return handleError(err);
- //                  }
- //                  else {
- //                    return res.redirect('/index');
- //                  }
- //                });
- //              }
- //            }
- //          );
- //        }
- //      })
- //    });
- //  },
-
-	// app.post('/picpost/create', function (req, res) {
-	// 	console.log("here's my picpost comment! ", req.body.new_post_content);
-	// 	console.log("this post is going to be put onto wall: ", req.body.wall_id);
-	// 	var tmp_path = req.files.new_post_pic.path;
-	// 	var target_path = "./public/images/posts/" + req.files.new_post_pic.name;
-	// 	console.log("here's my post info: ", req.body);
-	// 	var post_pic = req.body;
-	// 	fs.rename(tmp_path, target_path, function (err) {
-	// 		if (err) throw err;
-	// 		fs.unlink(tmp_path, function() {
-	// 			if (err) {
-	// 				throw err;
-	// 			}
-	// 			else {
-	// 				post_pic.picture = "/images/posts/" + req.files.new_post_pic.name;
-	// 				req.data = post_pic;
-	// 				createNewPost(post_pic.wall_id, req);
-	// 			}
-	// 		});
-	// 	});
-	// });
-
 	app.io.route("/posts/create", function (req, res) {
 		createNewPost(req.data.wall_id, req);
+	});
+	app.io.route("/comments/create", function (req, res) {
+		createNewComment(req.data.post_id, req.data.wall_id, req);
 	});
 };

@@ -57,8 +57,9 @@
 
 		<div class="right_sidebar col-xs-2 col-xs-offset-1">
 			<div class="notifications">
+				<h4>Notifications</h4>
 <!-- -------------- mockup -------------- -->					
-				<p><a href=""><span class="user_name">Sherlock Holmes</span></a> commented on Jim Moriarty's post.</p>
+<!-- 				<p><a href=""><span class="user_name">Sherlock Holmes</span></a> commented on Jim Moriarty's post.</p>
 				<p><a href=""><span class="user_name">Mrs. Hudson</span></a> posted on Yorkshire Cricket's site.</p>
 				<p><a href=""><span class="user_name">Irene Adler</span></a> posted a message on Jim Moriarty's wall.</p>
 				<p><a href=""><span class="user_name">Greg Lestrade</span></a> is now friends with Molly Hooper.</p>
@@ -67,10 +68,11 @@
 				<p><a href=""><span class="user_name">Mrs. Hudson</span></a> posted on Yorkshire Cricket's site.</p>
 				<p><a href=""><span class="user_name">Irene Adler</span></a> posted a message on Jim Moriarty's wall.</p>
 				<p><a href=""><span class="user_name">Greg Lestrade</span></a> is now friends with Molly Hooper.</p>
-				<p><a href=""><span class="user_name">John Watson</span></a> likes Sherlock Holmes' post.</p>
+				<p><a href=""><span class="user_name">John Watson</span></a> likes Sherlock Holmes' post.</p> -->
 <!-- ============== end mockup ============== -->				
 			</div>
 			<div class="contact_list">
+				<h4>Friends</h4>
 				<p ng-repeat="person in friends_list">					
 					<a ng-href="#/profile/{{person._id}}"><img ng-src="{{person.pic}}"><span class="user_name">{{ person.first_name }} {{ person.last_name }}</span></a>
 				</p>

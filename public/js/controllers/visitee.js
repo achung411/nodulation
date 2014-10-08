@@ -3,6 +3,7 @@ portal.controller('visiteeController', function ($scope, socket, $routeParams, c
 	$scope.friendly = false;
 	$scope.picPoster = false;
 	$scope.yourPosts = [];
+	$scope.allComments = [];
 	$scope.posters = [];
 
 	var visitee_id = $routeParams.userid;
@@ -28,6 +29,7 @@ portal.controller('visiteeController', function ($scope, socket, $routeParams, c
 		$scope.yourPosts = req;
 		for (var i=0; i<req.length; i++) {
 			socket.emit("retrieve_author", req[i].author_id);
+			socket.emit("retrieve_comment", req[i]._id);
 		};
 	});
 
@@ -41,6 +43,18 @@ portal.controller('visiteeController', function ($scope, socket, $routeParams, c
 		if (unique) {
 			$scope.posters.push(req);
 		}
+	});
+
+	socket.on("retrieved_comment", function (req) {
+		var unique = true;
+		for (var i=0;i<$scope.allComments.length; i++) {
+			if (req._id == $scope.allComments[i]._id) {
+				unique = false;
+			}
+		};
+		if (unique) {
+			$scope.allComments.push(req);
+		};
 	});
 
 	$scope.addFriend = function (target_id) {
@@ -77,4 +91,8 @@ portal.controller('visiteeController', function ($scope, socket, $routeParams, c
 		$scope.postForm.$setPristine();
  		socket.emit("/posts/create", {author_id: $scope.me._id, wall_id: visitee_id, content: details});
  	};
+
+ 	$scope.writeComment = function(commentary, post_id) {
+		socket.emit("/comments/create", {post_id: post_id, author_id: $scope.me._id, wall_id: visitee_id, content: commentary});
+	};
 });
