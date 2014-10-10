@@ -4,8 +4,7 @@ var mongoose = require('mongoose')
   ,	Post = mongoose.model('Post')
   ,	Comment = mongoose.model('Comment');
 
-module.exports = function Event(app) {
-	var current_user;
+module.exports = function Event (app) {
 
 	function isInArray (value, array) {
 		return array.indexOf(value) > -1;
@@ -45,24 +44,76 @@ module.exports = function Event(app) {
 				return handleError(err);
 			}
 			else {
+				var me = req.session.current_user;
+				User
+				.findOne({_id: a.wall_id})
+				.select("first_name last_name")
+				.exec(function (err, result) {
+					if (err) {
+						return handleError(err);
+					}
+					else {
+						var mini_me = {};
+						if (me._id == result._id) {
+							mini_me = {sessionID: req.sessionID, subject_fname: me.first_name, subject_lname: me.last_name, subject_id: me._id,
+								message1: "has posted on their own wall.", action: "posting"};
+						}
+						else {
+							mini_me = {sessionID: req.sessionID, subject_fname: me.first_name, subject_lname: me.last_name, subject_id: me._id, 
+								object_fname: result.first_name, object_lname: result.last_name + "'s", object_id: result._id, 
+								message1: "has posted on", message2: "wall.", action: "posting"};
+						}
+						req.io.broadcast("notify", mini_me)
+					};
 				getAllPosts(wall_id, req);
+				});
 			}
 		});
 	};
 	function createNewComment (post_id, wall_id, req) {
 		var new_comment = req.data;
-		// console.log("Incoming new comment: ", new_comment);
 		var a = new Comment(new_comment);
 		a.save(function (err, a) {
 			if (err) {
 				return handleError(err);
 			}
 			else {
-				console.log("We made a comment!");
-				// getAllComments();
+				var me = req.session.current_user;
+				Post
+				.findOne({_id: a.post_id})
+				.select("author_id")
+				.exec(function (err, data) {
+					if (err) {
+						return handleError(err);
+					}
+					else {
+						console.log("We found the post id: ", data);
+						User
+						.findOne({_id: data.author_id})
+						.select("first_name last_name")
+						.exec(function (err, result) {
+							if (err) {
+								return handleError(err)
+							}
+							else {
+								var mini_me = {};
+								if (me._id == result._id) {
+									mini_me = {sessionID: req.sessionID, subject_fname: me.first_name, subject_lname: me.last_name, subject_id: me._id,
+										message1: "has commented on their own post.", action: "posting"};
+								}
+								else {
+									mini_me = {sessionID: req.sessionID, subject_fname: me.first_name, subject_lname: me.last_name, subject_id: me._id, 
+										object_fname: result.first_name, object_lname: result.last_name + "'s", object_id: result._id,
+										message1: "has commented on", message2: "post.", action: "posting"};
+								}
+								req.io.broadcast("notify", mini_me);
+							}						
+						});
+					} 
 				getAllPosts(wall_id, req);
+				});
 			}
-		})
+		});
 	};
 
 	app.io.route('/users/create', function (req) {
@@ -74,7 +125,7 @@ module.exports = function Event(app) {
 			}
 			else {
 				var a = new User(new_user);
-				a.save(function(err, a) {
+				a.save(function (err, a) {
 					if (err) {
 						console.log("There was an error trying to register this new user: ", err);
 					}
@@ -97,7 +148,6 @@ module.exports = function Event(app) {
 	            req.session.current_user = found_user;
 	            req.session.sessionID = req.sessionID;
 	            req.session.save(function() {
-	            	current_user = found_user;
 	                req.io.emit('user_authenticated', found_user);
 	            });
 	        };
@@ -155,28 +205,30 @@ module.exports = function Event(app) {
 			req.io.emit("reset");
 		}
 		else {
-			var current_id = req.session.current_user._id;
 			var visitee_id = req.data;
-			User.find({_id: current_id}, function (err, results) {
-				var my_record = results[0];								// refreshes user settings
-				User.find({_id: visitee_id}, function (err, results) {	// gets visitor settings
-					if (err) {
-						return handleError(err);
-					}
-					else {
-						var visitee_record = results[0];
-						getAllPosts(visitee_id, req);
-						req.io.emit("visit_approved", {my_record: my_record, visitee_record: visitee_record});
-					}
-				});
+			var my_record = req.session.current_user;
+			User.find({_id: visitee_id}, function (err, results) {	// gets visitor settings
+				if (err) {
+					return handleError(err);
+				}
+				else {
+					var visitee_record = results[0];
+					getAllPosts(visitee_id, req);
+					req.io.emit("visit_approved", {my_record: my_record, visitee_record: visitee_record});
+				}
 			});
 		}
 	});
 	app.io.route("getMyPosts", function (req) {
-		getAllPosts(current_user._id, req);
+		if (typeof req.session.current_user == "undefined") {
+			req.io.emit("reset");
+		}
+		else {
+			getAllPosts(req.session.current_user._id, req);
+		}
 	});
 	app.io.route("getYourPosts", function (req) {
-		getAllPosts(req.data.target_id, req);
+		getAllPosts(req.data, req);
 	});
 	app.io.route("retrieve_author", function (req) {
 		retrieveAuthor(req);
@@ -218,6 +270,9 @@ module.exports = function Event(app) {
 						}
 						else {
 							req.io.emit('incoming_msg', "Your profile has been updated.");
+							var	mini_me = {sessionID: req.sessionID, subject_fname: result.first_name, subject_lname: result.last_name, subject_id: result._id,
+								message1: "has updated their status.", action: "details"};
+							req.io.broadcast("notify", mini_me);
 						}
 					});
 				}
@@ -237,6 +292,9 @@ module.exports = function Event(app) {
 					}
 					else {
 						req.io.emit("status_updated", {status: req.data});
+						var	mini_me = {sessionID: req.sessionID, subject_fname: result.first_name, subject_lname: result.last_name, subject_id: result._id,
+							message1: "has updated their status.", action: "details"};
+						req.io.broadcast("notify", mini_me);
 					}
 				});
 			};
@@ -285,6 +343,10 @@ module.exports = function Event(app) {
 											}
 											else {
 												req.io.emit("made_a_friend", {new_friend: returned_info[0]});
+												var mini_me = {sessionID: req.sessionID, subject_fname: me.first_name, subject_lname: me.last_name, subject_id: me._id, 
+													object_fname: result.first_name, object_lname: result.last_name, object_id: result._id,
+													message1: "and", message2: "are now friends.", action: "friend"};
+												req.io.broadcast("notify", mini_me);
 											}
 										});
 									}
@@ -337,6 +399,11 @@ module.exports = function Event(app) {
 										return handleError(err);
 									}
 									else {
+										var me = req.session.current_user;
+										var mini_me = {sessionID: req.sessionID, subject_fname: me.first_name, subject_lname: me.last_name, subject_id: me._id, 
+											object_fname: result.first_name, object_lname: result.last_name, object_id: result._id,
+											message1: "and", message2: "are no longer friends.", action: "friend"};
+										req.io.broadcast("notify", mini_me);
 										req.io.emit("unfriended", {dropped_friend: friend_id});
 									}
 								});
@@ -353,4 +420,6 @@ module.exports = function Event(app) {
 	app.io.route("/comments/create", function (req, res) {
 		createNewComment(req.data.post_id, req.data.wall_id, req);
 	});
+	// app.io.route("disconnect", function (req) {
+	// });
 };

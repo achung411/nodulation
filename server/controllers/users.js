@@ -13,8 +13,8 @@ module.exports = {
     else {
       res.redirect('/');
     };
- },
- create_picture: function (req, res) {
+  },
+  create_picture: function (req, res) {
     var tmp_path = req.files.picture.path;
     var target_path = './public/images/pics/' + req.files.picture.name;
     fs.rename(tmp_path, target_path, function(err) {
@@ -89,11 +89,11 @@ module.exports = {
     req.session.destroy(function() {
       res.redirect('/');
     });
-  },
+  // },
 // ------------------- for debugging purposes ---------------
-  test: function(req, res) {   // this api call displays 
-    User.find({}, function(err, results) {  // all users in the database
-      res.send(results);          
-    });
+  // test: function(req, res) {   // this api call displays 
+  //   User.find({}, function(err, results) {  // all users in the database
+  //     res.send(results);          
+  //   });
   }  
 }

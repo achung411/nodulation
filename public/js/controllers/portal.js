@@ -1,4 +1,4 @@
-portal.controller('portalController', function ($scope, socket, conduit){
+portal.controller('portalController', function ($scope, socket){
 
 	// $scope.$on('$destroy', function (event) {
 	// 	socket.removeAllListeners();
@@ -10,6 +10,12 @@ portal.controller('portalController', function ($scope, socket, conduit){
 	$scope.posters = [];
 
 	socket.emit("getMyPosts");
+
+ 	socket.on("notify", function (msg) {
+ 		if (msg.action == "posting") {
+ 			socket.emit("getMyPosts");
+ 		};
+ 	});
 
 	socket.on("/posts/index", function (req) {
 		$scope.allPosts = req;
@@ -54,15 +60,15 @@ portal.controller('portalController', function ($scope, socket, conduit){
 		$scope.me.status = req.status;
 	});
 
-	$scope.chooseText = function() {
+	$scope.chooseText = function () {
  		$scope.picPoster = false;
  	};
 
- 	$scope.choosePic = function() {
+ 	$scope.choosePic = function () {
  		$scope.picPoster = true;
  	};
 
- 	$scope.writeMyPost = function(new_post) {
+ 	$scope.writeMyPost = function (new_post) {
  		var details = new_post;
  		$scope.new_post = "";
  		$scope.postForm.$setPristine();
@@ -73,7 +79,7 @@ portal.controller('portalController', function ($scope, socket, conduit){
 		socket.emit("/users/edit", user);
 	};
 
-	$scope.writeComment = function(commentary, post_id) {
+	$scope.writeComment = function (commentary, post_id) {
 		socket.emit("/comments/create", {post_id: post_id, author_id: $scope.me._id, wall_id: $scope.me._id, content: commentary});
 	};
 

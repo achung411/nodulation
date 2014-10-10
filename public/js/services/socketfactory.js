@@ -1,5 +1,5 @@
 portal.factory('socket', function ($rootScope) {
-	var socket = ioo.connect();
+	var socket = io.connect();
 	var factory = {};
 
 	factory.on = function (eventName, callback) {

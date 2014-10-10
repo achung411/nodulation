@@ -1,4 +1,4 @@
-portal.controller('visiteeController', function ($scope, socket, $routeParams, conduit){
+portal.controller('visiteeController', function ($scope, socket, $routeParams){
 
 	$scope.friendly = false;
 	$scope.picPoster = false;
@@ -9,6 +9,15 @@ portal.controller('visiteeController', function ($scope, socket, $routeParams, c
 	var visitee_id = $routeParams.userid;
 
 	socket.emit("initialize_visit", visitee_id);
+
+ 	socket.on("notify", function (msg) {
+ 		if (msg.action == "posting") {
+ 			socket.emit("getYourPosts", visitee_id);
+ 		}
+ 		else if (msg.action == "details" || msg.action == "friend") {
+ 			socket.emit("initialize_visit", visitee_id);
+ 		}
+ 	});
 
 	// $scope.$on('$destroy', function (event) {
 	// 	socket.removeAllListeners();
